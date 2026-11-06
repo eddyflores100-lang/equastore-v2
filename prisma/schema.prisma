@@ -1,0 +1,244 @@
+// Equastore v2 — multi-country dropshipping schema
+// Prisma + PostgreSQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Country configuration — each country has its own Dropi + dLocal + currency
+// ---------------------------------------------------------------------------
+
+enum CountryCode {
+  EC
+  CO
+  MX
+  CL
+  PE
+}
+
+model CountryConfig {
+  code        CountryCode @id
+  name        String
+  currency    String
+  flag        String // emoji
+  phoneCode   String
+  // Dropi API config (per-country token)
+  dropiApiUrl String
+  dropiToken  String // stored encrypted at rest; for MVP plain env
+  // dLocal country code (matches dLocal's country list)
+  dLocalCountryCode String
+  // Document type for checkout (e.g. "cédula", "RUT", "DNI", "CURP", "NIT")
+  documentLabel     String
+  documentRegex     String
+  // COD enabled?
+  codEnabled        Boolean @default(true)
+  // Cash on delivery fee in local currency
+  codFee            Decimal? @db.Decimal(10, 2)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// Product catalog — multi-country inventory
+// ---------------------------------------------------------------------------
+
+model Product {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  description String   @db.Text
+  brand       String?
+  category    String?
+  imageUrl    String?
+  badgeText   String?
+  badgeColor  String?
+  rating      Float?
+  // Multi-country inventory + price
+  inventory   Inventory[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([category])
+  @@index([brand])
+}
+
+model Inventory {
+  id          String      @id @default(cuid())
+  product     Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId   String
+  country     CountryCode
+  dropiSku    String? // Dropi's SKU for this country
+  price       Decimal    @db.Decimal(10, 2)
+  currency    String
+  available   Boolean    @default(true)
+  stock       Int        @default(0)
+  // Last sync info from Dropi webhook
+  lastSyncedAt DateTime?
+
+  @@unique([productId, country])
+  @@index([country, available])
+}
+
+// ---------------------------------------------------------------------------
+// Customer — hybrid guest/auth
+// ---------------------------------------------------------------------------
+
+model Customer {
+  id           String   @id @default(cuid())
+  email        String?  @unique
+  phone        String?
+  name         String?
+  documentId   String? // cédula, RUT, DNI, etc.
+  country      CountryCode?
+  address      Json?   // { street, city, province, zipCode, country }
+  // Auth fields (optional — guest checkout has null passwordHash)
+  passwordHash String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  orders       Order[]
+
+  @@index([email])
+  @@index([phone])
+}
+
+// ---------------------------------------------------------------------------
+// Order — multi-country, multi-payment
+// ---------------------------------------------------------------------------
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PAID
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+  ABANDONED
+  // COD-specific
+  COD_PENDING_CONFIRMATION
+  COD_CONFIRMED
+  COD_REJECTED
+}
+
+enum PaymentMethod {
+  DLOCAL_CARD
+  DLOCAL_CASH
+  DLOCAL_BANK_TRANSFER
+  DLOCAL_WALLET
+  COD
+  CRYPTO_BTCPAY
+  BANK_TRANSFER_MANUAL
+  PAY_BY_LINK
+}
+
+enum PaymentStatus {
+  PENDING
+  AUTHORIZED
+  CAPTURED
+  REJECTED
+  REFUNDED
+  EXPIRED
+}
+
+model Order {
+  id              String         @id @default(cuid())
+  // Internal + external IDs
+  orderNumber     String         @unique
+  dropiOrderId    String? // Dropi's order ID per country
+  dLocalPaymentId String? // dLocal payment ID
+  
+  // Relations
+  customer        Customer?      @relation(fields: [customerId], references: [id])
+  customerId      String?
+  
+  // Country context
+  country         CountryCode
+  
+  // Cart at the time of order (snapshot)
+  items           Json // Array of { productId, slug, title, quantity, unitPrice, currency, dropiSku }
+  subtotal        Decimal        @db.Decimal(10, 2)
+  shippingCost    Decimal        @db.Decimal(10, 2)
+  codFee          Decimal?       @db.Decimal(10, 2)
+  discount        Decimal?       @db.Decimal(10, 2)
+  total           Decimal        @db.Decimal(10, 2)
+  currency        String
+  
+  // Status
+  status          OrderStatus    @default(PENDING)
+  paymentStatus   PaymentStatus  @default(PENDING)
+  paymentMethod   PaymentMethod?
+  
+  // Shipping info (snapshot)
+  shippingAddress Json // { name, phone, street, city, province, zipCode, country }
+  
+  // Timestamps
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  confirmedAt     DateTime?
+  paidAt          DateTime?
+  shippedAt       DateTime?
+  deliveredAt     DateTime?
+  
+  // Tracking
+  trackingNumber  String?
+  courier         String?
+  
+  // Upsell tracking
+  upsellOffered   String? // which upsell was offered
+  upsellAccepted Boolean        @default(false)
+  downsellOffered String?
+  downsellAccepted Boolean       @default(false)
+  
+  // Risk score (for COD)
+  riskScore       Float? // 0-100, computed by AI risk analyzer
+  
+  @@index([country, status])
+  @@index([customerId])
+  @@index([paymentStatus])
+  @@index([createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// Abandoned cart leads — capture user data as they type (from v1)
+// ---------------------------------------------------------------------------
+
+model AbandonedCart {
+  id           String      @id @default(cuid())
+  email        String?
+  phone        String?
+  name         String?
+  country      CountryCode?
+  items        Json
+  total        Decimal     @db.Decimal(10, 2)
+  currency     String
+  status       String      @default("ABANDONED") // ABANDONED, RECOVERED, CONVERTED
+  recoveryAttempted Boolean @default(false)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([email])
+  @@index([phone])
+  @@index([status, createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// Webhooks log — for Dropi + dLocal webhook events
+// ---------------------------------------------------------------------------
+
+model WebhookEvent {
+  id          String   @id @default(cuid())
+  source      String   // "dropi" | "dlocal" | "btcpay"
+  eventType   String
+  payload     Json
+  signature   String?
+  processedAt DateTime?
+  createdAt   DateTime @default(now())
+
+  @@index([source, eventType, createdAt])
+}

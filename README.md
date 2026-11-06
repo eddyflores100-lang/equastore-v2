@@ -1,36 +1,150 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Equastore v2
 
-## Getting Started
+Multi-country dropshipping store for LATAM, powered by Dropi + dLocal + COD + crypto.
 
-First, run the development server:
+Built with Next.js 16 + TypeScript + Tailwind + shadcn/ui + Prisma.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🌎 Multi-country
+
+- 🇪🇨 Ecuador (dropi.ec, USD)
+- 🇨🇴 Colombia (dropi.co, COP)
+- 🇲🇽 México (dropi.mx, MXN)
+- 🇨🇱 Chile (dropi.cl, CLP)
+- 🇵🇪 Peru (dropi.pe, PEN)
+
+## 💳 Payment methods (via dLocal)
+
+- Cards: Visa, Mastercard, Amex, Diners, local cards
+- Bank transfers: PSE (CO), SPEI (MX)
+- Cash: OXXO (MX), PagoEfectivo (PE), Baloto (CO)
+- Wallets: Nequi, Daviplata (CO), Yape (PE), Mercado Pago
+- **COD (Cash on Delivery)** per country
+- **Crypto** (USDT/Lightning via BTCPay Server self-hosted)
+
+## 🏗️ Architecture
+
+```
+                    [ Cliente visita equastore.com ]
+                                  │
+                    [ Cloudflare Edge: cf-ipcountry header ]
+                                  │
+                    [ Next.js 16 middleware: geolocate ]
+                                  │
+        ┌─────────────────────────┼─────────────────────────┐
+        ▼                         ▼                         ▼
+   [ /ec — Ecuador ]        [ /co — Colombia ]        [ /mx, /cl, /pe ]
+   Dropi.ec API             Dropi.co API              Dropi.{cl,pe,mx}
+   Currency: USD            Currency: COP             ...
+   dLocal EC methods        dLocal CO (PSE, Nequi)    dLocal country-specific
+                                  │
+                                  ▼
+                    [ Prisma + PostgreSQL (catalog cache) ]
+                    [ Dropi webhook → revalidate cache ]
+                                  │
+                                  ▼
+                    [ Checkout propio (form dinámico) ]
+                    [ dLocal Smart Fields para card ]
+                    [ COD option per country ]
+                    [ Cripto (BTCPay Server) ]
+                                  │
+                                  ▼
+                    [ POST /api/orders → Dropi createOrder ]
+                    [ POST /api/payments → dLocal createPayment ]
+                    [ Webhook n8n → Google Sheets + WhatsApp ]
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Quickstart
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 1. Install dependencies
+```bash
+npm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 2. Set up env vars
+```bash
+cp .env.example .env.local
+# Fill in DATABASE_URL, DROPI_*_TOKEN, DLOCAL_*, BTCPAY_*, etc.
+```
 
-## Learn More
+### 3. Set up database
+```bash
+npm run db:generate
+npm run db:push  # or npm run db:migrate
+npm run db:seed  # optional
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 4. Run dev server
+```bash
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Visit http://localhost:3000 — middleware will redirect `/` to `/ec` (default country).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📦 Stack
 
-## Deploy on Vercel
+- **Framework**: Next.js 16 (App Router, Turbopack, partial prefetching)
+- **Language**: TypeScript 5
+- **Styling**: Tailwind CSS 4 + shadcn/ui
+- **Database**: PostgreSQL + Prisma 6
+- **Payments**: dLocal (cards + APMs), BTCPay Server (crypto), COD
+- **Dropshipping**: Dropi (multi-country tokens)
+- **Geolocation**: Cloudflare cf-ipcountry header
+- **Auth**: NextAuth v5 (hybrid guest/login)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📁 Project structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/
+  app/
+    (marketing)/          # landing route group
+    [country]/            # dynamic country path: /ec, /co, /mx, /cl, /pe
+      productos/
+      producto/[slug]/
+      checkout/
+    api/
+      orders/             # POST /api/orders → Dropi createOrder
+      payments/           # POST /api/payments → dLocal createPayment
+      webhooks/
+        dropi/            # Dropi catalog + order status webhooks
+        dlocal/           # dLocal payment status webhooks
+        btcpay/           # BTCPay Server crypto webhooks
+  lib/
+    dropi/                # multi-country Dropi API client
+    dlocal/               # dLocal payment client (HMAC signed)
+    btcpay/               # BTCPay Server client
+    geo/                   # geolocation utilities
+    auth/                  # NextAuth config
+    countries/             # country configs (5 LATAM countries)
+  components/
+    landing/              # hero, header, footer, trust badges
+    product/              # ProductCard, ProductGrid, QuickView
+    checkout/             # CheckoutForm, CODForm, UpsellModal
+    country/              # CountryProvider, CountrySwitcher
+    payment/              # dLocal Smart Fields, BTCPay button, COD selector
+    ui/                   # shadcn/ui components
+  types/                  # shared TypeScript types
+  config/                 # app config
+prisma/
+  schema.prisma           # multi-country schema (Product, Inventory, Order, etc.)
+  seed.ts                 # seed script
+```
+
+## 🛡️ Security
+
+- **No raw card data** — dLocal Smart Fields handles card tokenization in their iframe
+- **HMAC signed** dLocal requests (X-Signature header)
+- **Per-country tokens** — Dropi credentials isolated per country
+- **Webhook signature verification** for Dropi + dLocal + BTCPay
+
+## 📈 Conversion features (Shopify-style)
+
+- **Upsell**: 1-click post-purchase upsell in confirmation page
+- **Downsell**: if upsell rejected, offer cheaper alternative
+- **COD risk scoring**: AI-powered risk analysis before confirming COD orders
+- **Abandoned cart**: capture partial data as user types (even if they don't finish)
+- **Trust badges**: ISO certified, 30-day guarantee, free shipping threshold
+- **Multi-language**: ES (default), FR (planned)
+
+## 🌍 License
+
+MIT © AliceLabs LLC
