@@ -47,6 +47,9 @@ const placeholderImg = (label: string, color = '1e3a8a') =>
     `<svg xmlns='http://www.w3.org/2000/svg' width='600' height='600' viewBox='0 0 600 600'><rect width='600' height='600' fill='#${color}'/><text x='300' y='300' font-family='sans-serif' font-size='48' font-weight='bold' fill='white' text-anchor='middle' dominant-baseline='middle'>${label}</text></svg>`
   )}`;
 
+// Product star uses the 3D rendered image
+const productStarImg = '/equastore-v2/products/gladiator-3d.png';
+
 export const MOCK_PRODUCTS: Product[] = [
   {
     id: 'gladiator-pump',
@@ -56,7 +59,7 @@ export const MOCK_PRODUCTS: Product[] = [
       'Pre-entreno de máxima intensidad con beta-alanina, citrulina y cafeína. 300g para 30 sesiones. Sabor frutas tropicales.',
     brand: 'Equastore',
     category: 'fuerza',
-    images: [placeholderImg('Gladiator', '1e3a8a')],
+    images: [productStarImg],
     badge: { text: 'MÁS VENDIDO', color: 'bg-orange-500' },
     rating: 4.9,
     reviewCount: 1247,
