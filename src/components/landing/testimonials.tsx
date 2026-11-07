@@ -1,77 +1,63 @@
-import { Star, Quote } from 'lucide-react';
+'use client';
 
-const TESTIMONIALS = [
+import { InfiniteMovingCards } from '@/components/ui/infinite-moving-cards';
+import { Star } from 'lucide-react';
+
+const testimonials = [
   {
+    quote: 'El Gladiator Pump llegó en 24h a Quito. Calidad brutal, sin azúcares. El certificado ISO viene en el empaque.',
     name: 'Carlos M.',
-    role: 'Crossfitter · Quito',
+    title: 'Crossfitter · Quito, Ecuador',
     rating: 5,
-    text: 'Pedí Gladiator Pump un lunes, llegó el miércoles. Calidad brutal, sin azúcares agregados. Lo que más valoro es que el certificado ISO viene en el empaque.',
-    product: 'Gladiator Pump',
   },
   {
+    quote: 'El Glicinato de Magnesio cambió mi sueño. Antes usaba otro importado de USA. Con Equastore lo tengo en 48h y más barato.',
     name: 'Valeria R.',
-    role: 'Yoga teacher · Bogotá',
+    title: 'Yoga teacher · Bogotá, Colombia',
     rating: 5,
-    text: 'El Glicinato de Magnesio cambió mi sueño. Antes usaba otro importado de USA que tardaba semanas en llegar. Con Equastore lo tengo en 48h y más barato.',
-    product: 'Glicinato de Magnesio',
   },
   {
+    quote: 'La creatina es 99.9% pura — lo verifiqué con el lab de mi gym. Y pagué con SPEI sin comisión. Cliente recurrente.',
     name: 'Mateo L.',
-    role: 'Powerlifter · CDMX',
+    title: 'Powerlifter · CDMX, México',
     rating: 5,
-    text: 'La creatina es 99.9% pura — lo verifiqué con el lab de confianza de mi gym. Y pagué con SPEI sin comisión. Equastore se ganó cliente recurrente.',
-    product: 'Creatina Monohidratada',
+  },
+  {
+    quote: 'Pedí Turkesterone y llegué a Chile en 3 días. Resultados visibles en 2 semanas. El mejor precio que encontré.',
+    name: 'Javiera S.',
+    title: 'Atleta · Santiago, Chile',
+    rating: 5,
+  },
+  {
+    quote: 'Compré 6 Colágenos y el Moringa. Envío gratis, pagué con cripto. Llegó todo perfecto a Lima.',
+    name: 'Diego P.',
+    title: 'Fitness coach · Lima, Perú',
+    rating: 5,
   },
 ];
 
 export function Testimonials() {
   return (
-    <section className="bg-white py-20">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="relative overflow-hidden bg-[#0a0a1a] py-24">
+      <div className="mx-auto max-w-7xl px-6">
         <div className="mb-12 text-center">
-          <div className="inline-flex items-center gap-1 text-amber-500">
-            {[1, 2, 3, 4, 5].map((s) => (
-              <Star key={s} className="h-4 w-4 fill-amber-400 text-amber-400" />
-            ))}
-          </div>
-          <h2 className="mt-3 text-3xl font-semibold text-slate-900 sm:text-4xl">
-            4.9 de 5 · más de 10.000 reseñas
+          <p className="text-sm font-bold uppercase tracking-wider text-[#22D3EE]">Comunidad</p>
+          <h2 className="mt-2 text-4xl font-extrabold text-white sm:text-5xl">
+            +10.000 clientes <span className="bg-gradient-to-r from-[#FFB800] to-[#FF4B5C] bg-clip-text text-transparent">satisfechos</span>
           </h2>
-          <p className="mt-3 text-sm text-slate-500">
-            Clientes reales que ya entrenan y viven mejor con Equastore.
-          </p>
         </div>
+      </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
-          {TESTIMONIALS.map((t) => (
-            <figure
-              key={t.name}
-              className="relative flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-6"
-            >
-              <Quote className="absolute right-5 top-5 h-6 w-6 text-slate-200" />
-              <div className="flex items-center gap-1">
-                {[1, 2, 3, 4, 5].map((s) => (
-                  <Star key={s} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                ))}
-              </div>
-              <blockquote className="flex-1 text-sm leading-relaxed text-slate-700">
-                "{t.text}"
-              </blockquote>
-              <figcaption className="flex items-center gap-3 border-t border-slate-100 pt-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-amber-400 to-orange-500 text-sm font-semibold text-slate-950">
-                  {t.name.charAt(0)}
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-slate-900">{t.name}</div>
-                  <div className="text-xs text-slate-500">{t.role}</div>
-                </div>
-              </figcaption>
-              <div className="text-[10px] uppercase tracking-wider text-amber-600">
-                Compró: {t.product}
-              </div>
-            </figure>
-          ))}
-        </div>
+      <div className="relative">
+        <InfiniteMovingCards
+          items={testimonials.map(t => ({
+            quote: t.quote,
+            name: t.name,
+            title: t.title,
+          }))}
+          direction="right"
+          speed="slow"
+        />
       </div>
     </section>
   );

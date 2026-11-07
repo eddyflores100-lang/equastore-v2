@@ -1,212 +1,145 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { Star, Truck, Shield, Leaf, Zap, Flame, CheckCircle2, ArrowRight } from 'lucide-react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { useRef } from 'react';
+import { Sparkles as SparklesIcon, ArrowRight, Star, Zap, Shield, Truck } from 'lucide-react';
 import { useCountry } from '@/components/country/country-provider';
+
+import { TextGenerateEffect } from '@/components/ui/text-generate-effect';
 
 export function Hero() {
   const { country } = useCountry();
   const base = `/${country.toLowerCase()}`;
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
+  const y = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.8]);
+
+  const words = 'Suplementos de élite. Equipamiento inteligente. Todo lo que necesitás para construir tu mejor versión.';
 
   return (
-    <section className="relative overflow-hidden bg-[#5142f5] pt-32 pb-24 px-6 md:px-12">
-      {/* Light sweep gradient */}
-      <div className="pointer-events-none absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 50%)' }} />
-      {/* Decorative glow */}
-      <div className="pointer-events-none absolute -right-20 top-20 h-96 w-96 rounded-full bg-[#6C5CE7]/30 blur-[100px]" />
+    <section ref={ref} className="relative min-h-screen overflow-hidden bg-black">
+      {/* Gradient overlay */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/40 via-[#5142f5]/20 to-black" />
+      <div className="pointer-events-none absolute inset-0" style={{ background: 'radial-gradient(ellipse at center, rgba(81,66,245,0.15), transparent 60%)' }} />
 
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
-        {/* Left: Text */}
+      {/* Content with parallax */}
+      <motion.div
+        style={{ y, opacity, scale }}
+        className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col items-center justify-center px-6 text-center"
+      >
+        {/* Badge */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+          className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-2 backdrop-blur-md"
+        >
+          <SparklesIcon className="h-3.5 w-3.5 text-[#22D3EE]" />
+          <span className="text-xs font-medium text-white/80">Nuevo · Rediseño 2026</span>
+        </motion.div>
+
+        {/* Headline */}
+        <motion.h1
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.8, ease: 'easeOut' }}
+          className="text-5xl font-extrabold leading-[1.05] tracking-tight text-white sm:text-7xl lg:text-8xl"
+        >
+          Tu cuerpo,
+          <br />
+          <span className="bg-gradient-to-r from-[#5142f5] via-[#22D3EE] to-[#FF4B5C] bg-clip-text text-transparent">
+            tu poder
+          </span>
+        </motion.h1>
+
+        {/* Text generate effect — Aceternity */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          className="mt-6 max-w-2xl"
+        >
+          <TextGenerateEffect words={words} className="text-base text-white/60 sm:text-lg" />
+        </motion.div>
+
+        {/* CTA buttons */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: 'easeOut' }}
+          transition={{ delay: 1, duration: 0.6 }}
+          className="mt-10 flex flex-wrap items-center justify-center gap-4"
         >
-          <h1 className="text-5xl font-extrabold leading-[1.1] tracking-tight sm:text-6xl">
-            <span className="block text-white">Tu cuerpo,</span>
-            <span className="block" style={{ color: '#22D3EE' }}>tu meta,</span>
-            <span className="block" style={{ color: '#FF4B5C' }}>tu poder</span>
-          </h1>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Link
+              href={`${base}/productos`}
+              className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-white px-8 py-4 text-sm font-bold text-black"
+              style={{ boxShadow: '0 0 40px rgba(255,255,255,0.3)' }}
+            >
+              Explorar productos
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </motion.div>
 
-          <p className="mt-6 text-lg text-white">
-            Desde suplementos de élite hasta equipamiento inteligente.
-          </p>
-          <p className="mt-1 text-sm text-white/60">
-            Todo lo que necesitas para construir tu mejor versión.
-          </p>
-
-          {/* Buttons — pill shape */}
-          <div className="mt-8 flex flex-wrap gap-3">
-            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-              <Link
-                href={`${base}/productos`}
-                className="inline-flex items-center gap-2 rounded-full px-7 py-3 text-sm font-bold text-white shadow-lg transition"
-                style={{
-                  background: 'linear-gradient(135deg, #FF4B5C, #E33B4B)',
-                  boxShadow: '0 8px 30px rgba(255,75,92,0.4)',
-                }}
-              >
-                Comprar Ahora
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </motion.div>
-
-            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-              <Link
-                href={`${base}/ofertas`}
-                className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-7 py-3 text-sm font-bold text-white backdrop-blur-md transition hover:bg-white/20"
-              >
-                Ver Oferta RTO IA
-              </Link>
-            </motion.div>
-          </div>
-
-          {/* Trust row */}
-          <div className="mt-6 flex items-center gap-4 text-sm">
-            <span className="flex items-center gap-1.5 text-white">
-              <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-              Garantía 30 días
-            </span>
-            <span className="flex items-center gap-1.5 text-white/80">
-              <span className="h-1.5 w-1.5 rounded-full bg-white/40" />
-              Envíos gratis &gt; $25
-            </span>
-          </div>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Link
+              href={`${base}/ofertas`}
+              className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/5 px-8 py-4 text-sm font-bold text-white backdrop-blur-md hover:bg-white/10"
+            >
+              Ver ofertas
+            </Link>
+          </motion.div>
         </motion.div>
 
-        {/* Right: 3D Product image with floating glassmorphic badges */}
+        {/* Stats row — floating glass cards */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.85 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
-          className="relative flex items-center justify-center"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.2, duration: 0.6 }}
+          className="mt-16 grid grid-cols-2 gap-4 sm:grid-cols-4"
         >
-          {/* Glow behind product */}
-          <div className="absolute inset-0" style={{ background: 'radial-gradient(circle at center, rgba(255,255,255,0.15), transparent 60%)' }} />
-
-          {/* Product image — floating animation */}
-          <motion.div
-            animate={{ y: [0, -12, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-            className="relative z-10"
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/equastore-v2/product-3d.png"
-              alt="Producto estrella"
-              className="w-full max-w-md rounded-[40px]"
-              style={{ filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.2))' }}
-            />
-          </motion.div>
-
-          {/* Floating glassmorphic badges */}
-          {/* Top-left: Envío rápido */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
-            className="absolute left-0 top-4 flex items-center gap-2 rounded-2xl border border-white/20 bg-white/90 p-3 shadow-xl backdrop-blur-lg"
-          >
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100">
-              <Truck className="h-4 w-4 text-blue-600" />
-            </div>
-            <div>
-              <div className="text-xs font-bold text-slate-900">ENVÍO RÁPIDO</div>
-              <div className="text-[10px] text-slate-500">24-48 horas</div>
-            </div>
-          </motion.div>
-
-          {/* Top-right: Energía Pura */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.8, duration: 0.5 }}
-            className="absolute right-0 top-12 rounded-2xl border border-white/20 bg-white/90 p-3 shadow-xl backdrop-blur-lg"
-          >
-            <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-100">
-                <Flame className="h-4 w-4 text-orange-500" />
-              </div>
-              <div>
-                <div className="text-xs font-bold text-slate-900">Energía Pura</div>
-                <div className="text-[10px] text-slate-500">Performance 95%</div>
-              </div>
-            </div>
-            <div className="mt-2 h-1.5 w-20 overflow-hidden rounded-full bg-slate-200">
-              <div className="h-full w-[95%] rounded-full" style={{ background: 'linear-gradient(90deg, #FF4B5C, #FF8A4B)' }} />
-            </div>
-          </motion.div>
-
-          {/* Right-middle: Rating */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 1, duration: 0.5 }}
-            className="absolute -right-2 top-1/2 flex items-center gap-1 rounded-full bg-slate-900/80 px-3 py-1.5 backdrop-blur-md"
-          >
-            <div className="flex">
-              {[1,2,3,4,5].map(s => <Star key={s} className="h-3 w-3 fill-amber-400 text-amber-400" />)}
-            </div>
-            <span className="text-xs font-bold text-white">4.9/5</span>
-          </motion.div>
-
-          {/* Rotated OFFERTA badge */}
-          <motion.div
-            initial={{ opacity: 0, rotate: -15 }}
-            animate={{ opacity: 1, rotate: -12 }}
-            transition={{ delay: 0.7, duration: 0.5 }}
-            className="absolute right-4 bottom-20 rounded-xl px-3 py-2 text-center shadow-xl"
-            style={{ background: '#FF4B5C', transform: 'rotate(-12deg)' }}
-          >
-            <div className="text-[10px] font-bold text-white">OFERTA</div>
-            <div className="text-sm font-extrabold text-white">-20% OFF</div>
-          </motion.div>
-
-          {/* Bottom-left: ECO-FRIENDLY */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.2, duration: 0.5 }}
-            className="absolute bottom-4 left-0 flex items-center gap-2 rounded-2xl border border-white/20 bg-white/90 p-3 shadow-xl backdrop-blur-lg"
-          >
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100">
-              <Leaf className="h-4 w-4 text-emerald-600" />
-            </div>
-            <div>
-              <div className="text-xs font-bold text-slate-900">ECO-FRIENDLY</div>
-              <div className="text-[10px] text-slate-500">Sostenible</div>
-            </div>
-          </motion.div>
-
-          {/* Left-middle: CALIDAD LAB */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 1, duration: 0.5 }}
-            className="absolute -left-2 top-1/3 flex items-center gap-2 rounded-2xl border border-white/20 bg-white/90 p-3 shadow-xl backdrop-blur-lg"
-          >
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100">
-              <Shield className="h-4 w-4 text-blue-600" />
-            </div>
-            <div>
-              <div className="text-xs font-bold text-slate-900">CALIDAD LAB</div>
-              <div className="text-[10px] text-slate-500">Certificado ISO</div>
-            </div>
-          </motion.div>
-
-          {/* Chat FAB */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 1.5, duration: 0.4, type: 'spring' }}
-            className="absolute bottom-0 right-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#5142f5] shadow-xl"
-            style={{ boxShadow: '0 8px 24px rgba(81,66,245,0.5)' }}
-          >
-            <Zap className="h-5 w-5 text-white" />
-          </motion.div>
+          {[
+            { icon: Star, value: '4.9', label: 'Rating', color: '#FFB800' },
+            { icon: Zap, value: '24h', label: 'Envío', color: '#22D3EE' },
+            { icon: Shield, value: 'ISO', label: 'Certificado', color: '#5142f5' },
+            { icon: Truck, value: '+$25', label: 'Envío gratis', color: '#FF4B5C' },
+          ].map((stat, i) => {
+            const Icon = stat.icon;
+            return (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 1.4 + i * 0.1, type: 'spring' }}
+                className="flex flex-col items-center gap-1 rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-md"
+              >
+                <Icon className="h-5 w-5" style={{ color: stat.color }} />
+                <span className="text-xl font-extrabold text-white">{stat.value}</span>
+                <span className="text-[10px] text-white/50">{stat.label}</span>
+              </motion.div>
+            );
+          })}
         </motion.div>
-      </div>
+      </motion.div>
+
+      {/* Scroll indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 2 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2"
+      >
+        <motion.div
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+          className="flex flex-col items-center gap-1 text-white/40"
+        >
+          <span className="text-[10px] uppercase tracking-widest">Scroll</span>
+          <div className="h-8 w-px bg-gradient-to-b from-white/40 to-transparent" />
+        </motion.div>
+      </motion.div>
     </section>
   );
 }
