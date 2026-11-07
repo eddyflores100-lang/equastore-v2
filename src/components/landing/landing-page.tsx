@@ -1,5 +1,12 @@
+'use client';
+
 import { SiteHeader } from './site-header';
 import { Hero } from './hero';
+import { TrustStrip } from './trust-strip';
+import { Categories } from './categories';
+import { FeaturedProducts } from './featured-products';
+import { SiteFooter } from './site-footer';
+import { OfferModal } from './offer-modal';
 
 export function LandingPage() {
   return (
@@ -7,8 +14,12 @@ export function LandingPage() {
       <SiteHeader />
       <main>
         <Hero />
-        {/* TODO: FeaturedProducts, Categories, TrustSection, Footer */}
+        <TrustStrip />
+        <Categories />
+        <FeaturedProducts />
       </main>
+      <SiteFooter />
+      <OfferModal />
     </>
   );
 }

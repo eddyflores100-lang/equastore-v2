@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/sonner';
+import { Suspense } from 'react';
 import { CountryProvider } from '@/components/country/country-provider';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
@@ -28,7 +29,9 @@ export default function RootLayout({
   return (
     <html lang="es" className={inter.variable}>
       <body className="font-sans antialiased min-h-screen bg-white text-slate-900">
-        <CountryProvider>{children}</CountryProvider>
+        <Suspense fallback={null}>
+          <CountryProvider>{children}</CountryProvider>
+        </Suspense>
         <Toaster />
       </body>
     </html>
