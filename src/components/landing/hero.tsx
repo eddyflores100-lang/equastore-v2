@@ -1,117 +1,97 @@
 import Link from 'next/link';
-import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star, Flame } from 'lucide-react';
 
 export function Hero() {
   return (
     <section className="relative bg-black">
-      {/* Hero carousel — full-width gym image with blue tint */}
-      <div className="relative h-[500px] overflow-hidden sm:h-[600px]">
-        {/* Background gym image */}
+      {/* Hero */}
+      <div className="relative h-[500px] overflow-hidden sm:h-[560px]">
+        {/* Background — dark gym with blue lighting */}
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage:
-              "url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1920&q=80')",
+              "url('https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=1920&q=80')",
           }}
         />
-        {/* Dark blue gradient overlay — BB.com style */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0D1520]/90 via-[#0D1520]/60 to-transparent" />
+        {/* Dark blue gradient — left to right */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0a0f1c] via-[#0a0f1c]/80 to-[#0a0f1c]/20" />
 
-        {/* Content */}
         <div className="relative mx-auto flex h-full max-w-7xl items-center px-4 sm:px-6 lg:px-8">
-          <div className="max-w-xl text-white">
-            {/* Badge */}
-            <div className="mb-4 inline-block bg-[#1F5AF6] px-4 py-1.5 text-sm font-black">
-              BLACK FRIDAY SALE
+          <div className="max-w-lg text-white">
+            {/* Sale badge — RED for urgency */}
+            <div className="mb-4 inline-flex items-center gap-1.5 rounded bg-[#DC2626] px-3 py-1 text-xs font-bold">
+              <Flame className="h-3 w-3" />
+              BLACK FRIDAY EARLY SALE
             </div>
 
-            {/* Headline */}
-            <h1 className="text-5xl font-black italic leading-none sm:text-6xl lg:text-7xl">
-              B2G1
-              <span className="text-[#1F5AF6]"> FREE</span>
+            {/* Headline — bold sans, NOT italic serif */}
+            <h1 className="text-5xl font-extrabold leading-[0.95] tracking-tight sm:text-6xl">
+              B2G1 FREE
             </h1>
-            <p className="mt-3 text-lg font-bold uppercase tracking-wider sm:text-xl">
+            <p className="mt-3 text-xl font-bold uppercase tracking-wide text-[#1F5AF6]">
               Hasta 40% OFF en Signature
             </p>
 
-            <p className="mt-4 max-w-md text-sm text-white/80">
-              Suplementos de grado farmacéutico, envío a LATAM en 24-72h. Pago con tarjeta, transferencia, COD o cripto.
-            </p>
-
-            {/* CTA — BB.com blue button */}
+            {/* CTA */}
             <Link
               href="/ofertas"
-              className="mt-6 inline-flex h-12 items-center bg-[#1F5AF6] px-8 text-sm font-black text-white shadow-lg transition hover:bg-[#1A4DD6]"
+              className="mt-6 inline-flex h-12 items-center bg-[#1F5AF6] px-8 text-sm font-bold text-white shadow-lg transition hover:bg-[#1A4DD6]"
             >
-              SHOP NOW
+              COMPRAR AHORA
             </Link>
 
-            {/* Trust row */}
-            <div className="mt-6 flex items-center gap-4 text-xs text-white/70">
+            {/* Trust */}
+            <div className="mt-6 flex items-center gap-4 text-xs font-medium text-white/90">
               <span className="flex items-center gap-1">
-                <Star className="h-3.5 w-3.5 fill-[#1F5AF6] text-[#1F5AF6]" />
-                4.9/5 · 10K+ reseñas
+                <Star className="h-3.5 w-3.5 fill-[#FFB800] text-[#FFB800]" />
+                4.9/5 · 10K+ clientes
               </span>
-              <span>·</span>
+              <span className="text-white/40">|</span>
               <span>Envío gratis +$25</span>
-              <span>·</span>
+              <span className="text-white/40">|</span>
               <span>ISO Certified</span>
             </div>
           </div>
         </div>
 
-        {/* Carousel arrows */}
-        <button className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-white/20 p-2 backdrop-blur hover:bg-white/30">
-          <ChevronLeft className="h-5 w-5 text-white" />
+        {/* Carousel controls */}
+        <button className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full border border-white/20 bg-black/30 p-2 backdrop-blur hover:bg-black/50">
+          <ChevronLeft className="h-4 w-4 text-white" />
         </button>
-        <button className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-white/20 p-2 backdrop-blur hover:bg-white/30">
-          <ChevronRight className="h-5 w-5 text-white" />
+        <button className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full border border-white/20 bg-black/30 p-2 backdrop-blur hover:bg-black/50">
+          <ChevronRight className="h-4 w-4 text-white" />
         </button>
 
-        {/* Pagination dots */}
+        {/* Dots */}
         <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-1.5">
           <span className="h-1.5 w-6 rounded-full bg-[#1F5AF6]" />
           {[2,3,4,5,6,7,8].map(i => (
-            <span key={i} className="h-1.5 w-1.5 rounded-full bg-white/40" />
+            <span key={i} className="h-1.5 w-1.5 rounded-full bg-white/30" />
           ))}
         </div>
       </div>
 
-      {/* Promo strip — 3 items like BB.com */}
+      {/* Promo strip */}
       <div className="border-t border-white/10 bg-[#14181F]">
         <div className="mx-auto grid max-w-7xl grid-cols-1 sm:grid-cols-3">
-          <PromoLink
-            badge="NEW"
-            badgeColor="bg-[#FFB800] text-black"
-            text="BODYBUILDING PEPTIDES ARE LIVE"
-            href="/categorias/peptidos"
-          />
-          <PromoLink
-            badge="5X"
-            badgeColor="bg-[#1F5AF6] text-white"
-            text="MEMBERS EARN 5 POINTS PER $1"
-            href="/rewards"
-          />
-          <PromoLink
-            badge="QUIZ"
-            badgeColor="bg-[#17C3A3] text-black"
-            text="FIND YOUR STACK — TAKE THE QUIZ"
-            href="/quiz"
-          />
+          <Link href="/categorias/peptidos" className="flex items-center justify-center gap-2 border-b border-white/10 py-2.5 text-xs font-semibold sm:border-b-0 sm:border-r sm:last:border-r-0">
+            <span className="rounded bg-[#FFB800] px-1.5 py-0.5 text-[10px] font-bold text-black">NEW</span>
+            <span className="text-white">Bodybuilding Peptides disponibles</span>
+            <span className="text-[#1F5AF6]">Saber más</span>
+          </Link>
+          <Link href="/rewards" className="flex items-center justify-center gap-2 border-b border-white/10 py-2.5 text-xs font-semibold sm:border-b-0 sm:border-r sm:last:border-r-0">
+            <span className="rounded bg-[#1F5AF6] px-1.5 py-0.5 text-[10px] font-bold text-white">5X</span>
+            <span className="text-white">Gana 5 puntos por cada $1</span>
+            <span className="text-[#1F5AF6]">Saber más</span>
+          </Link>
+          <Link href="/quiz" className="flex items-center justify-center gap-2 py-2.5 text-xs font-semibold">
+            <span className="rounded bg-[#17C3A3] px-1.5 py-0.5 text-[10px] font-bold text-black">QUIZ</span>
+            <span className="text-white">Encontrá tu stack ideal</span>
+            <span className="text-[#1F5AF6]">Saber más</span>
+          </Link>
         </div>
       </div>
     </section>
-  );
-}
-
-function PromoLink({ badge, badgeColor, text, href }: { badge: string; badgeColor: string; text: string; href: string }) {
-  return (
-    <Link href={href} className="flex items-center justify-center gap-2 border-b border-white/10 py-2.5 text-xs sm:border-b-0 sm:border-r sm:last:border-r-0">
-      <span className={`rounded px-1.5 py-0.5 text-[10px] font-black ${badgeColor}`}>
-        {badge}
-      </span>
-      <span className="font-bold text-white">{text}</span>
-      <span className="text-[#1F5AF6] underline">LEARN MORE</span>
-    </Link>
   );
 }

@@ -19,11 +19,11 @@ export function FeaturedProducts() {
     <section className="bg-white py-8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-4 flex items-center justify-between border-b-2 border-[#1F5AF6] pb-2">
-          <h2 className="text-xl font-black uppercase text-slate-900 sm:text-2xl">
-            BEST SELLERS
+          <h2 className="text-xl font-extrabold uppercase tracking-tight text-slate-900 sm:text-2xl">
+            Más vendidos
           </h2>
           <Link href="/productos" className="flex items-center gap-1 text-xs font-bold text-[#1F5AF6]">
-            VER TODOS <ChevronRight className="h-3 w-3" />
+            Ver todos <ChevronRight className="h-3 w-3" />
           </Link>
         </div>
 

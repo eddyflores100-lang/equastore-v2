@@ -1,33 +1,32 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/sonner';
 import { Suspense } from 'react';
 import { CountryProvider } from '@/components/country/country-provider';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
-
 export const metadata: Metadata = {
   title: {
-    default: 'Equastore — Tu cuerpo, tu meta, tu poder',
+    default: 'Equastore — Suplementos deportivos de grado farmacéutico',
     template: '%s | Equastore',
   },
   description:
-    'Suplementos deportivos y de wellness con envío a Ecuador, Colombia, México, Chile y Perú. Pago con tarjeta, transferencia, efectivo, COD y cripto.',
+    'Suplementos deportivos y de wellness con envío a Ecuador, Colombia, México, Chile y Perú.',
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
-  openGraph: {
-    title: 'Equastore',
-    description: 'Tu cuerpo, tu meta, tu poder',
-    type: 'website',
-    locale: 'es_EC',
-  },
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="es" className={inter.variable}>
+    <html lang="es">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body className="font-sans antialiased min-h-screen bg-white text-slate-900">
         <Suspense fallback={null}>
           <CountryProvider>{children}</CountryProvider>
