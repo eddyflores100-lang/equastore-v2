@@ -1,98 +1,165 @@
+'use client';
+
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, Star, Flame } from 'lucide-react';
+import { useCountry } from '@/components/country/country-provider';
 
 export function Hero() {
+  const { country } = useCountry();
+  const base = `/${country.toLowerCase()}`;
+
   return (
     <section className="relative overflow-hidden bg-[#0a0f1c]">
       <div className="relative h-[520px] overflow-hidden sm:h-[580px]">
-        {/* Background image */}
+        {/* Background */}
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=1920&q=80')",
-          }}
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=1920&q=80')" }}
         />
-        {/* Multi-layer gradients for depth */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0a0f1c] via-[#0a0f1c]/85 to-[#0a0f1c]/30" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1c] via-transparent to-[#0a0f1c]/40" />
+        {/* Dark overlays for depth */}
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(10,15,28,0.95), rgba(10,15,28,0.7), rgba(10,15,28,0.2))' }} />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(0deg, rgba(10,15,28,0.8), transparent, rgba(10,15,28,0.3))' }} />
 
-        {/* Floating glow orbs — PERMANENT, always visible */}
-        <div className="pointer-events-none absolute left-1/4 top-1/3 h-72 w-72 rounded-full bg-[#1F5AF6]/25 blur-[120px]" />
-        <div className="pointer-events-none absolute right-1/3 bottom-1/4 h-56 w-56 rounded-full bg-[#3B82F6]/20 blur-[100px]" />
-        <div className="pointer-events-none absolute left-1/2 top-1/2 h-40 w-40 rounded-full bg-[#DC2626]/10 blur-[80px]" />
+        {/* GLOW ORBS - always visible */}
+        <div style={{ position: 'absolute', left: '20%', top: '25%', width: '300px', height: '300px', borderRadius: '50%', background: 'rgba(31,90,246,0.25)', filter: 'blur(120px)' }} />
+        <div style={{ position: 'absolute', right: '25%', bottom: '20%', width: '224px', height: '224px', borderRadius: '50%', background: 'rgba(59,130,246,0.2)', filter: 'blur(100px)' }} />
+        <div style={{ position: 'absolute', left: '50%', top: '40%', width: '160px', height: '160px', borderRadius: '50%', background: 'rgba(220,38,38,0.1)', filter: 'blur(80px)' }} />
 
         {/* Content */}
         <div className="relative mx-auto flex h-full max-w-7xl items-center px-4 sm:px-6 lg:px-8">
           <div className="max-w-lg text-white">
-            {/* Badge with permanent glow */}
-            <div className="mb-4 inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-br from-[#DC2626] to-[#B91C1C] px-3 py-1.5 text-xs font-bold shadow-[0_4px_20px_rgba(220,38,38,0.5)]">
+            {/* Badge - red gradient + glow */}
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              borderRadius: '8px',
+              padding: '6px 12px',
+              fontSize: '12px',
+              fontWeight: 700,
+              background: 'linear-gradient(135deg, #DC2626, #B91C1C)',
+              boxShadow: '0 4px 20px rgba(220,38,38,0.5)',
+              marginBottom: '16px',
+            }}>
               <Flame className="h-3 w-3" />
               BLACK FRIDAY EARLY SALE
             </div>
 
-            {/* Headline with permanent text glow */}
-            <h1 className="text-5xl font-extrabold leading-[0.95] tracking-tight text-glow-white sm:text-6xl">
-              B2G1 FREE
-            </h1>
-            <p className="mt-3 text-xl font-bold uppercase tracking-wide text-[#1F5AF6] text-glow-blue">
-              Hasta 40% OFF en Signature
-            </p>
+            {/* Headline with STRONG text shadow */}
+            <h1 style={{
+              fontSize: '3.5rem',
+              fontWeight: 800,
+              lineHeight: 0.95,
+              letterSpacing: '-0.02em',
+              textShadow: '0 4px 30px rgba(0,0,0,0.6), 0 0 40px rgba(31,90,246,0.3)',
+            }}>B2G1 FREE</h1>
 
-            {/* CTA with permanent gradient + glow */}
+            <p style={{
+              marginTop: '12px',
+              fontSize: '1.25rem',
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+              color: '#1F5AF6',
+              textShadow: '0 2px 20px rgba(31,90,246,0.6)',
+            }}>Hasta 40% OFF en Signature</p>
+
+            {/* CTA - gradient + glow */}
             <Link
-              href="/ofertas"
-              className="depth-btn glow-blue mt-6 inline-flex h-12 items-center rounded-lg px-8 text-sm font-bold text-white"
-            >
-              COMPRAR AHORA
-            </Link>
+              href={`${base}/ofertas`}
+              style={{
+                display: 'inline-flex',
+                height: '48px',
+                alignItems: 'center',
+                borderRadius: '8px',
+                padding: '0 32px',
+                fontSize: '14px',
+                fontWeight: 700,
+                color: '#fff',
+                background: 'linear-gradient(135deg, #1F5AF6, #1A4DD6)',
+                boxShadow: '0 8px 30px rgba(31,90,246,0.5), inset 0 1px 0 rgba(255,255,255,0.15)',
+                marginTop: '24px',
+                textDecoration: 'none',
+              }}
+            >COMPRAR AHORA</Link>
 
-            {/* Trust with glass effect — always visible */}
-            <div className="glass-light mt-6 inline-flex items-center gap-3 rounded-full px-4 py-2 text-xs font-medium text-white/90">
+            {/* Trust pill - glassmorphism */}
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '12px',
+              borderRadius: '999px',
+              padding: '8px 16px',
+              fontSize: '12px',
+              fontWeight: 500,
+              color: 'rgba(255,255,255,0.9)',
+              background: 'rgba(255,255,255,0.05)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              marginTop: '24px',
+            }}>
               <span className="flex items-center gap-1">
-                <Star className="h-3.5 w-3.5 fill-[#FFB800] text-[#FFB800]" />
+                <Star className="h-3.5 w-3.5" style={{ fill: '#FFB800', color: '#FFB800' }} />
                 4.9/5 · 10K+
               </span>
-              <span className="text-white/30">|</span>
+              <span style={{ color: 'rgba(255,255,255,0.3)' }}>|</span>
               <span>Envío +$25</span>
-              <span className="text-white/30">|</span>
+              <span style={{ color: 'rgba(255,255,255,0.3)' }}>|</span>
               <span>ISO</span>
             </div>
           </div>
         </div>
 
-        {/* Carousel buttons with glass */}
-        <button className="glass-light absolute left-3 top-1/2 -translate-y-1/2 rounded-full p-2.5">
-          <ChevronLeft className="h-4 w-4 text-white" />
-        </button>
-        <button className="glass-light absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-2.5">
-          <ChevronRight className="h-4 w-4 text-white" />
-        </button>
+        {/* Carousel buttons - glass */}
+        <button style={{
+          position: 'absolute',
+          left: '12px',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          borderRadius: '999px',
+          padding: '10px',
+          background: 'rgba(255,255,255,0.05)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          border: '1px solid rgba(255,255,255,0.15)',
+        }}><ChevronLeft className="h-4 w-4 text-white" /></button>
 
-        {/* Dots with glow on active */}
+        <button style={{
+          position: 'absolute',
+          right: '12px',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          borderRadius: '999px',
+          padding: '10px',
+          background: 'rgba(255,255,255,0.05)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          border: '1px solid rgba(255,255,255,0.15)',
+        }}><ChevronRight className="h-4 w-4 text-white" /></button>
+
+        {/* Dots */}
         <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-1.5">
-          <span className="h-1.5 w-6 rounded-full bg-[#1F5AF6] shadow-[0_0_10px_rgba(31,90,246,0.8)]" />
-          {[2,3,4,5,6,7,8].map(i => (
-            <span key={i} className="h-1.5 w-1.5 rounded-full bg-white/30" />
-          ))}
+          <span style={{ height: '6px', width: '24px', borderRadius: '999px', background: '#1F5AF6', boxShadow: '0 0 10px rgba(31,90,246,0.8)' }} />
+          {[2,3,4,5,6,7,8].map(i => <span key={i} style={{ height: '6px', width: '6px', borderRadius: '999px', background: 'rgba(255,255,255,0.3)' }} />)}
         </div>
       </div>
 
       {/* Promo strip */}
-      <div className="border-t border-white/10 bg-[#14181F]">
+      <div style={{ background: '#14181F', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
         <div className="mx-auto grid max-w-7xl grid-cols-1 sm:grid-cols-3">
-          <Link href="/categorias/peptidos" className="group flex items-center justify-center gap-2 border-b border-white/10 py-2.5 text-xs font-semibold transition hover:bg-white/5 sm:border-b-0 sm:border-r sm:last:border-r-0">
-            <span className="depth-badge-yellow rounded px-1.5 py-0.5 text-[10px] font-bold text-black">NEW</span>
+          <Link href={`${base}/categorias/peptidos`} className="group flex items-center justify-center gap-2 border-b py-2.5 text-xs font-semibold hover:bg-white/5 sm:border-b-0 sm:border-r sm:last:border-r-0" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+            <span style={{ borderRadius: '4px', padding: '2px 6px', fontSize: '10px', fontWeight: 700, color: '#000', background: 'linear-gradient(135deg, #FFB800, #E5A700)', boxShadow: '0 2px 8px rgba(255,184,0,0.4)' }}>NEW</span>
             <span className="text-white">Bodybuilding Peptides</span>
             <span className="text-[#1F5AF6] group-hover:text-[#3B82F6]">→</span>
           </Link>
-          <Link href="/rewards" className="group flex items-center justify-center gap-2 border-b border-white/10 py-2.5 text-xs font-semibold transition hover:bg-white/5 sm:border-b-0 sm:border-r sm:last:border-r-0">
-            <span className="depth-btn rounded px-1.5 py-0.5 text-[10px] font-bold text-white">5X</span>
+          <Link href={`${base}/rewards`} className="group flex items-center justify-center gap-2 border-b py-2.5 text-xs font-semibold hover:bg-white/5 sm:border-b-0 sm:border-r sm:last:border-r-0" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+            <span style={{ borderRadius: '4px', padding: '2px 6px', fontSize: '10px', fontWeight: 700, color: '#fff', background: 'linear-gradient(135deg, #1F5AF6, #1A4DD6)', boxShadow: '0 2px 8px rgba(31,90,246,0.4)' }}>5X</span>
             <span className="text-white">Gana 5 puntos por $1</span>
             <span className="text-[#1F5AF6] group-hover:text-[#3B82F6]">→</span>
           </Link>
-          <Link href="/quiz" className="group flex items-center justify-center gap-2 py-2.5 text-xs font-semibold transition hover:bg-white/5">
-            <span className="rounded px-1.5 py-0.5 text-[10px] font-bold text-black" style={{ background: 'linear-gradient(135deg, #17C3A3, #0EA271)', boxShadow: '0 2px 8px rgba(23,195,163,0.4)' }}>QUIZ</span>
+          <Link href={`${base}/quiz`} className="group flex items-center justify-center gap-2 py-2.5 text-xs font-semibold hover:bg-white/5">
+            <span style={{ borderRadius: '4px', padding: '2px 6px', fontSize: '10px', fontWeight: 700, color: '#000', background: 'linear-gradient(135deg, #17C3A3, #0EA271)', boxShadow: '0 2px 8px rgba(23,195,163,0.4)' }}>QUIZ</span>
             <span className="text-white">Encontrá tu stack</span>
             <span className="text-[#1F5AF6] group-hover:text-[#3B82F6]">→</span>
           </Link>

@@ -11,6 +11,7 @@ import type { Product } from '@/types/product';
 
 export function FeaturedProducts() {
   const { country } = useCountry();
+  const base = `/${country.toLowerCase()}`;
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const products = getFeaturedProducts(8);
@@ -18,11 +19,9 @@ export function FeaturedProducts() {
   return (
     <section className="bg-white py-8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-4 flex items-center justify-between border-b-2 border-[#1F5AF6] pb-2">
-          <h2 className="text-xl font-extrabold uppercase tracking-tight text-slate-900 sm:text-2xl">
-            Más vendidos
-          </h2>
-          <Link href="/productos" className="flex items-center gap-1 text-xs font-bold text-[#1F5AF6]">
+        <div style={{ borderBottom: '2px solid #1F5AF6', marginBottom: '16px', paddingBottom: '8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 800, textTransform: 'uppercase', color: '#111827' }}>Más vendidos</h2>
+          <Link href={`${base}/productos`} style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: 700, color: '#1F5AF6' }}>
             Ver todos <ChevronRight className="h-3 w-3" />
           </Link>
         </div>
