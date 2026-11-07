@@ -7,7 +7,7 @@ import { useCountry } from '@/components/country/country-provider';
 
 const GOALS = [
   { icon: Dumbbell, title: 'Fuerza y Músculo', desc: 'Proteína, creatina, pre-entreno', href: '/categorias/fuerza', color: '#F59E0B' },
-  { icon: Zap, title: 'Rendimiento', desc: 'BCAA, intra-entreno, energía', href: '/categorias/rendimiento', color: '#3B82F6' },
+  { icon: Zap, title: 'Rendimiento', desc: 'BCAA, intra-entreno, energía', href: '/categorias/rendimiento', color: '#7C6FF7' },
   { icon: Flame, title: 'Peso Saludable', desc: 'Quemadores y termogénicos', href: '/categorias/definicion', color: '#EF4444' },
   { icon: Heart, title: 'Recuperación', desc: 'Magnesio, colágeno, sueño', href: '/categorias/suplementos', color: '#10B981' },
 ];
@@ -82,7 +82,7 @@ export function ShopByGoal() {
                       <h3 style={{ fontWeight: 700, color: '#111827' }}>{goal.title}</h3>
                       <p style={{ marginTop: '4px', fontSize: '12px', color: '#6b7280' }}>{goal.desc}</p>
                     </div>
-                    <span style={{ fontSize: '12px', fontWeight: 700, color: '#1F5AF6' }}>Comprar →</span>
+                    <span style={{ fontSize: '12px', fontWeight: 700, color: '#5142F5' }}>Comprar →</span>
                   </Link>
                 </motion.div>
               </motion.div>

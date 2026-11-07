@@ -66,8 +66,8 @@ export function ProductCard({ product, country, onQuickView, index = 0 }: Produc
 
         {/* Body */}
         <div className="flex flex-1 flex-col p-3">
-          <div className="text-[10px] font-bold uppercase tracking-wider text-[#1F5AF6]">{product.brand || 'Equastore'}</div>
-          <Link href={`${base}/producto/${product.slug}`} className="mt-0.5 line-clamp-2 text-sm font-semibold text-slate-900 hover:text-[#1F5AF6]">{product.title}</Link>
+          <div className="text-[10px] font-bold uppercase tracking-wider text-[#5142F5]">{product.brand || 'Equastore'}</div>
+          <Link href={`${base}/producto/${product.slug}`} className="mt-0.5 line-clamp-2 text-sm font-semibold text-slate-900 hover:text-[#5142F5]">{product.title}</Link>
 
           {product.rating && (
             <div className="mt-1 flex items-center gap-1 text-[11px]">
@@ -103,7 +103,7 @@ export function ProductCard({ product, country, onQuickView, index = 0 }: Produc
               fontSize: '12px',
               fontWeight: 700,
               color: '#fff',
-              background: 'linear-gradient(135deg, #1F5AF6, #1A4DD6)',
+              background: 'linear-gradient(135deg, #5142F5, #4334D6)',
               boxShadow: '0 4px 12px rgba(31,90,246,0.35), inset 0 1px 0 rgba(255,255,255,0.15)',
               border: 'none',
               cursor: 'pointer',
@@ -119,7 +119,7 @@ export function ProductCard({ product, country, onQuickView, index = 0 }: Produc
 
 function categoryGlow(category: string): string {
   const glows: Record<string, string> = { suplementos: '#10B981', fuerza: '#F59E0B', definicion: '#EF4444', vitalidad: '#8B5CF6' };
-  return glows[category] || '#1F5AF6';
+  return glows[category] || '#5142F5';
 }
 
 function currencySymbol(currency: string): string {

@@ -40,6 +40,49 @@ export const MOCK_CATEGORIES: ProductCategory[] = [
     emoji: '⚡',
     productCount: 3,
   },
+  // Categorías del nav (para que generateStaticParams cree las páginas)
+  {
+    slug: 'proteina',
+    name: 'Proteína',
+    description: 'Proteínas de suero, isoladas y vegetales.',
+    emoji: '🥤',
+    productCount: 0,
+  },
+  {
+    slug: 'pre-entreno',
+    name: 'Pre-entreno',
+    description: 'Pre-entrenos para energía y foco.',
+    emoji: '⚡',
+    productCount: 0,
+  },
+  {
+    slug: 'creatina',
+    name: 'Creatina',
+    description: 'Creatina monohidratada y micronizada.',
+    emoji: '🔬',
+    productCount: 0,
+  },
+  {
+    slug: 'vitaminas',
+    name: 'Vitaminas',
+    description: 'Multivitamínicos y minerales.',
+    emoji: '💊',
+    productCount: 0,
+  },
+  {
+    slug: 'rendimiento',
+    name: 'Rendimiento',
+    description: 'BCAA, intra-entreno y energía.',
+    emoji: '🏃',
+    productCount: 0,
+  },
+  {
+    slug: 'peptidos',
+    name: 'Péptidos',
+    description: 'Péptidos para recuperación y salud.',
+    emoji: '🧬',
+    productCount: 0,
+  },
 ];
 
 const placeholderImg = (label: string, color = '1e3a8a') =>

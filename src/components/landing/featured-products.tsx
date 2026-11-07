@@ -25,10 +25,10 @@ export function FeaturedProducts() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          style={{ borderBottom: '2px solid #1F5AF6', marginBottom: '16px', paddingBottom: '8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+          style={{ borderBottom: '2px solid #5142F5', marginBottom: '16px', paddingBottom: '8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
         >
           <h2 style={{ fontSize: '1.5rem', fontWeight: 800, textTransform: 'uppercase', color: '#111827' }}>Más vendidos</h2>
-          <Link href={`${base}/productos`} style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: 700, color: '#1F5AF6' }}>
+          <Link href={`${base}/productos`} style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: 700, color: '#5142F5' }}>
             Ver todos <ChevronRight className="h-3 w-3" />
           </Link>
         </motion.div>

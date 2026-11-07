@@ -41,7 +41,7 @@ export function SiteHeader() {
               fontSize: '22px',
               fontWeight: 800,
               fontStyle: 'italic',
-              color: '#1F5AF6',
+              color: '#5142F5',
               textShadow: '0 0 20px rgba(31,90,246,0.6)',
             }}>EQ</span>
             <span className="hidden text-base font-extrabold tracking-tight text-white sm:inline">EQUASTORE</span>
@@ -68,7 +68,7 @@ export function SiteHeader() {
                 className="h-10 flex-1 bg-transparent px-3 text-sm text-white placeholder:text-slate-500 focus:outline-none"
               />
               <button style={{
-                background: 'linear-gradient(135deg, #1F5AF6, #1A4DD6)',
+                background: 'linear-gradient(135deg, #5142F5, #4334D6)',
                 boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.15)',
               }} className="flex h-10 items-center px-4 hover:opacity-90">
                 <Search className="h-4 w-4 text-white" />
@@ -78,12 +78,12 @@ export function SiteHeader() {
 
           <div className="ml-auto flex items-center gap-3">
             <CountrySwitcher />
-            <Link href={`${base}/cuenta`} className="hidden text-xs hover:text-[#1F5AF6] sm:block">
+            <Link href={`${base}/cuenta`} className="hidden text-xs hover:text-[#5142F5] sm:block">
               <div className="text-slate-400">Hola</div>
               <div className="font-bold text-white">Mi cuenta</div>
             </Link>
-            <Link href={`${base}/carrito`} className="relative flex items-center hover:text-[#1F5AF6]">
-              <ShoppingCart className="h-5 w-5 text-[#1F5AF6]" />
+            <Link href={`${base}/carrito`} className="relative flex items-center hover:text-[#5142F5]">
+              <ShoppingCart className="h-5 w-5 text-[#5142F5]" />
               <span style={{
                 position: 'absolute',
                 right: '-6px',
@@ -101,7 +101,7 @@ export function SiteHeader() {
 
       {/* Blue nav with shadow */}
       <nav style={{
-        background: 'linear-gradient(180deg, #1F5AF6, #1A4DD6)',
+        background: 'linear-gradient(180deg, #5142F5, #4334D6)',
         boxShadow: '0 4px 20px rgba(31,90,246,0.3)',
       }} className="text-white">
         <div className="mx-auto flex h-10 max-w-7xl items-center gap-1 px-4 text-xs font-bold sm:px-6 lg:px-8">

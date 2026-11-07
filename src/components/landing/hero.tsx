@@ -64,7 +64,7 @@ export function Hero() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4, duration: 0.6 }}
-                style={{ marginTop: '12px', fontSize: '1.25rem', fontWeight: 700, textTransform: 'uppercase', color: '#1F5AF6', textShadow: '0 2px 20px rgba(31,90,246,0.6)' }}
+                style={{ marginTop: '12px', fontSize: '1.25rem', fontWeight: 700, textTransform: 'uppercase', color: '#5142F5', textShadow: '0 2px 20px rgba(31,90,246,0.6)' }}
               >
                 Hasta 40% OFF en Signature
               </motion.p>
@@ -85,7 +85,7 @@ export function Hero() {
                     fontSize: '14px',
                     fontWeight: 700,
                     color: '#fff',
-                    background: 'linear-gradient(135deg, #1F5AF6, #1A4DD6)',
+                    background: 'linear-gradient(135deg, #5142F5, #4334D6)',
                     boxShadow: '0 8px 30px rgba(31,90,246,0.5)',
                     marginTop: '24px',
                     textDecoration: 'none',
@@ -193,17 +193,17 @@ export function Hero() {
           <Link href={`${base}/categorias/peptidos`} className="group flex items-center justify-center gap-2 border-b py-2.5 text-xs font-semibold hover:bg-white/5 sm:border-b-0 sm:border-r sm:last:border-r-0" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
             <span style={{ borderRadius: '4px', padding: '2px 6px', fontSize: '10px', fontWeight: 700, color: '#000', background: 'linear-gradient(135deg, #FFB800, #E5A700)', boxShadow: '0 2px 8px rgba(255,184,0,0.4)' }}>NEW</span>
             <span className="text-white">Bodybuilding Peptides</span>
-            <span className="text-[#1F5AF6] group-hover:text-[#3B82F6]">→</span>
+            <span className="text-[#5142F5] group-hover:text-[#7C6FF7]">→</span>
           </Link>
           <Link href={`${base}/rewards`} className="group flex items-center justify-center gap-2 border-b py-2.5 text-xs font-semibold hover:bg-white/5 sm:border-b-0 sm:border-r sm:last:border-r-0" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
-            <span style={{ borderRadius: '4px', padding: '2px 6px', fontSize: '10px', fontWeight: 700, color: '#fff', background: 'linear-gradient(135deg, #1F5AF6, #1A4DD6)', boxShadow: '0 2px 8px rgba(31,90,246,0.4)' }}>5X</span>
+            <span style={{ borderRadius: '4px', padding: '2px 6px', fontSize: '10px', fontWeight: 700, color: '#fff', background: 'linear-gradient(135deg, #5142F5, #4334D6)', boxShadow: '0 2px 8px rgba(31,90,246,0.4)' }}>5X</span>
             <span className="text-white">Gana 5 puntos por $1</span>
-            <span className="text-[#1F5AF6] group-hover:text-[#3B82F6]">→</span>
+            <span className="text-[#5142F5] group-hover:text-[#7C6FF7]">→</span>
           </Link>
           <Link href={`${base}/quiz`} className="group flex items-center justify-center gap-2 py-2.5 text-xs font-semibold hover:bg-white/5">
             <span style={{ borderRadius: '4px', padding: '2px 6px', fontSize: '10px', fontWeight: 700, color: '#000', background: 'linear-gradient(135deg, #17C3A3, #0EA271)', boxShadow: '0 2px 8px rgba(23,195,163,0.4)' }}>QUIZ</span>
             <span className="text-white">Encontrá tu stack</span>
-            <span className="text-[#1F5AF6] group-hover:text-[#3B82F6]">→</span>
+            <span className="text-[#5142F5] group-hover:text-[#7C6FF7]">→</span>
           </Link>
         </div>
       </div>

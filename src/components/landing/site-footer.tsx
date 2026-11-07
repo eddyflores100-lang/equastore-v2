@@ -25,7 +25,7 @@ export function SiteFooter() {
               const Icon = item.icon;
               return (
                 <div key={item.title} className="flex items-center gap-3 p-4">
-                  <Icon className="h-6 w-6" style={{ color: '#1F5AF6', flexShrink: 0 }} />
+                  <Icon className="h-6 w-6" style={{ color: '#5142F5', flexShrink: 0 }} />
                   <div>
                     <div style={{ fontSize: '12px', fontWeight: 700, color: '#fff' }}>{item.title}</div>
                     <div style={{ fontSize: '11px', color: '#94a3b8' }}>{item.desc}</div>
@@ -47,7 +47,7 @@ export function SiteFooter() {
             </div>
             <form className="flex gap-2">
               <input type="email" placeholder="tu@email.com" style={{ height: '40px', flex: 1, borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.03)', padding: '0 12px', fontSize: '14px', color: '#fff' }} />
-              <button type="submit" style={{ height: '40px', borderRadius: '8px', padding: '0 24px', fontSize: '14px', fontWeight: 700, color: '#fff', background: 'linear-gradient(135deg, #1F5AF6, #1A4DD6)', boxShadow: '0 4px 12px rgba(31,90,246,0.35)' }}>Unirse</button>
+              <button type="submit" style={{ height: '40px', borderRadius: '8px', padding: '0 24px', fontSize: '14px', fontWeight: 700, color: '#fff', background: 'linear-gradient(135deg, #5142F5, #4334D6)', boxShadow: '0 4px 12px rgba(31,90,246,0.35)' }}>Unirse</button>
             </form>
           </div>
         </div>
@@ -58,7 +58,7 @@ export function SiteFooter() {
         <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
           <div className="col-span-2 md:col-span-1">
             <Link href={base} className="flex items-center gap-2">
-              <span style={{ fontSize: '20px', fontWeight: 800, fontStyle: 'italic', color: '#1F5AF6', textShadow: '0 0 20px rgba(31,90,246,0.5)' }}>EQ</span>
+              <span style={{ fontSize: '20px', fontWeight: 800, fontStyle: 'italic', color: '#5142F5', textShadow: '0 0 20px rgba(31,90,246,0.5)' }}>EQ</span>
               <span style={{ fontWeight: 700, color: '#fff' }}>EQUASTORE</span>
             </Link>
             <p style={{ marginTop: '12px', fontSize: '12px', color: '#64748b' }}>El destino fitness #1 de LATAM desde 2019.</p>
@@ -91,7 +91,7 @@ function FooterCol({ base, title, links }: { base: string; title: string; links:
       <ul style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
         {links.map(([label, href]) => (
           <li key={label}>
-            <Link href={`${base}${href}`} style={{ fontSize: '12px', color: '#94a3b8' }} className="hover:text-[#1F5AF6]">{label}</Link>
+            <Link href={`${base}${href}`} style={{ fontSize: '12px', color: '#94a3b8' }} className="hover:text-[#5142F5]">{label}</Link>
           </li>
         ))}
       </ul>
