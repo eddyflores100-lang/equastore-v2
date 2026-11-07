@@ -15,16 +15,18 @@ export function FeaturedProducts() {
   const products = getFeaturedProducts(8);
 
   return (
-    <section className="bg-black py-24">
+    <section className="bg-gradient-to-b from-[#0a0a14] to-black py-24">
       <div className="mx-auto max-w-7xl px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mb-16"
+          className="mb-12"
         >
           <p className="text-sm font-bold uppercase tracking-wider text-[#5142f5]">Bestsellers</p>
-          <h2 className="mt-2 text-5xl font-extrabold uppercase tracking-tight text-white">Más vendidos</h2>
+          <h2 className="mt-2 text-4xl font-extrabold uppercase tracking-tight text-white sm:text-5xl">
+            Más <span className="bg-gradient-to-r from-[#5142f5] to-[#FF4B5C] bg-clip-text text-transparent">vendidos</span>
+          </h2>
         </motion.div>
 
         <ProductGrid

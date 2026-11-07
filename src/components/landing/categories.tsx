@@ -1,69 +1,73 @@
 'use client';
 
+import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { BentoGrid, BentoGridItem } from '@/components/ui/bento-grid';
-import { Dumbbell, Zap, Flame, Heart, Shield, Truck, Leaf, Sparkles } from 'lucide-react';
+import { Dumbbell, Zap, Flame, Heart, ArrowUpRight } from 'lucide-react';
+import { useCountry } from '@/components/country/country-provider';
 
-const items = [
-  { icon: Dumbbell, title: 'Fuerza', desc: 'Proteínas, creatinas, pre-entrenos', color: '#FF4B5C' },
-  { icon: Zap, title: 'Rendimiento', desc: 'BCAA, energía, foco mental', color: '#22D3EE' },
-  { icon: Flame, title: 'Definición', desc: 'Quemadores, termogénicos', color: '#FFB800' },
-  { icon: Heart, title: 'Vitalidad', desc: 'Adaptógenos, colágeno', color: '#10B981' },
-  { icon: Shield, title: 'Calidad ISO', desc: 'Certificación en cada lote', color: '#5142f5' },
-  { icon: Truck, title: 'Envío Express', desc: '24-72h a toda LATAM', color: '#7C6FF7' },
-  { icon: Leaf, title: 'Eco-Friendly', desc: 'Empaques sostenibles', color: '#10B981' },
-  { icon: Sparkles, title: 'IA Recomendaciones', desc: 'Encontrá tu stack ideal', color: '#22D3EE' },
+const GOALS = [
+  { icon: Dumbbell, title: 'Fuerza', desc: 'Proteína, creatina, pre-entreno', href: '/categorias/fuerza', color: '#5142f5' },
+  { icon: Zap, title: 'Rendimiento', desc: 'BCAA, energía, foco', href: '/categorias/rendimiento', color: '#22D3EE' },
+  { icon: Flame, title: 'Definición', desc: 'Quemadores, termogénicos', href: '/categorias/definicion', color: '#FF4B5C' },
+  { icon: Heart, title: 'Vitalidad', desc: 'Magnesio, colágeno, adaptógenos', href: '/categorias/vitalidad', color: '#10B981' },
 ];
 
 export function Categories() {
+  const { country } = useCountry();
+  const base = `/${country.toLowerCase()}`;
+
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-black to-[#0a0a1a] py-24">
-      <div className="mx-auto max-w-7xl px-6">
+    <section className="bg-black py-24">
+      <div className="mx-auto max-w-7xl px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mb-12 text-center"
+          className="mb-12"
         >
-          <p className="text-sm font-bold uppercase tracking-wider text-[#22D3EE]">Explorá</p>
-          <h2 className="mt-2 text-4xl font-extrabold text-white sm:text-5xl">
-            Todo en un <span className="bg-gradient-to-r from-[#5142f5] to-[#22D3EE] bg-clip-text text-transparent">lugar</span>
+          <p className="text-sm font-bold uppercase tracking-wider text-[#5142f5]">Explorá</p>
+          <h2 className="mt-2 text-4xl font-extrabold uppercase tracking-tight text-white sm:text-5xl">
+            Compra por <span className="bg-gradient-to-r from-[#5142f5] to-[#22D3EE] bg-clip-text text-transparent">objetivo</span>
           </h2>
         </motion.div>
 
-        <BentoGrid className="md:grid-cols-4 md:grid-rows-2">
-          {items.map((item, i) => {
-            const Icon = item.icon;
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {GOALS.map((goal, i) => {
+            const Icon = goal.icon;
             return (
-              <BentoGridItem
-                key={item.title}
-                title={<span className="flex items-center gap-2 text-white"><Icon className="h-4 w-4" style={{ color: item.color }} /> {item.title}</span>}
-                description={<span className="text-white/50">{item.desc}</span>}
-                header={
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.05 }}
-                    className="flex h-full w-full items-center justify-center"
-                  >
-                    <div
-                      className="flex h-16 w-16 items-center justify-center rounded-2xl"
-                      style={{
-                        background: `linear-gradient(135deg, ${item.color}30, transparent)`,
-                        border: `1px solid ${item.color}30`,
-                      }}
-                    >
-                      <Icon className="h-8 w-8" style={{ color: item.color }} />
-                    </div>
-                  </motion.div>
-                }
-                className={i === 3 || i === 6 ? 'md:col-span-2' : ''}
-                icon={<Icon className="h-4 w-4" style={{ color: item.color }} />}
-              />
+              <motion.div
+                key={goal.title}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                whileHover={{ y: -8 }}
+              >
+                <Link
+                  href={`${base}${goal.href}`}
+                  className="group relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-sm transition hover:border-[#5142f5]/40"
+                >
+                  {/* Glow on hover */}
+                  <div
+                    className="absolute -inset-1 opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-20"
+                    style={{ background: goal.color }}
+                  />
+                  {/* Icon */}
+                  <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl" style={{ background: `${goal.color}20`, border: `1px solid ${goal.color}30` }}>
+                    <Icon className="h-7 w-7" style={{ color: goal.color }} />
+                  </div>
+                  {/* Text */}
+                  <div>
+                    <h3 className="text-lg font-bold text-white">{goal.title}</h3>
+                    <p className="mt-1 text-sm text-white/40">{goal.desc}</p>
+                  </div>
+                  {/* Arrow */}
+                  <ArrowUpRight className="h-5 w-5 text-white/20 transition-all group-hover:text-white/60 group-hover:translate-x-1" />
+                </Link>
+              </motion.div>
             );
           })}
-        </BentoGrid>
+        </div>
       </div>
     </section>
   );
