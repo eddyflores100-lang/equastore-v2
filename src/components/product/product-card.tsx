@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Star, Plus, Eye } from 'lucide-react';
+import { Star, ShoppingCart } from 'lucide-react';
 import { useState } from 'react';
 import type { Product } from '@/types/product';
 import type { CountryCode } from '@/lib/countries';
@@ -14,10 +14,10 @@ interface ProductCardProps {
 }
 
 const CATEGORY_GRADIENTS: Record<string, string> = {
-  suplementos: 'from-emerald-500/30 via-emerald-700/10 to-slate-950',
-  fuerza: 'from-amber-500/30 via-orange-700/10 to-slate-950',
-  definicion: 'from-rose-500/30 via-rose-700/10 to-slate-950',
-  vitalidad: 'from-violet-500/30 via-indigo-700/10 to-slate-950',
+  suplementos: 'from-slate-700 via-slate-800 to-black',
+  fuerza: 'from-amber-700 via-amber-900 to-black',
+  definicion: 'from-rose-700 via-rose-900 to-black',
+  vitalidad: 'from-violet-700 via-violet-900 to-black',
 };
 
 export function ProductCard({ product, country, onQuickView }: ProductCardProps) {
@@ -26,93 +26,121 @@ export function ProductCard({ product, country, onQuickView }: ProductCardProps)
   const discount = getDiscountPercent(price);
   const symbol = currencySymbol(price.currency);
   const gradient = CATEGORY_GRADIENTS[product.category] || CATEGORY_GRADIENTS.suplementos;
+  const isOnSale = discount > 0;
 
   return (
     <div
-      className="group relative flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white transition-all duration-300 hover:border-slate-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)]"
+      className="group relative flex flex-col overflow-hidden border border-slate-200 bg-white transition-all hover:border-amber-400 hover:shadow-lg"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {/* Image area with category-tinted gradient packshot */}
-      <div className="relative aspect-square overflow-hidden bg-slate-50">
+      {/* Image area */}
+      <Link href={`/producto/${product.slug}`} className="relative block aspect-square overflow-hidden bg-slate-900">
         <div className={`absolute inset-0 bg-gradient-to-br ${gradient}`} />
-        {/* Packshot placeholder: brand monogram */}
+        {/* Brand monogram */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center">
-            <div className="text-5xl font-bold tracking-tight text-white/95">
-              {(product.brand || 'EQ').slice(0, 2).toUpperCase()}
-            </div>
-            <div className="mt-1 text-[10px] uppercase tracking-[0.2em] text-white/40">
-              {product.category}
-            </div>
+          <div className="text-7xl font-black text-white/90">
+            {(product.brand || 'EQ').slice(0, 2).toUpperCase()}
           </div>
         </div>
 
-        {/* Discount badge */}
-        {discount > 0 && (
-          <span className="absolute left-3 top-3 rounded-full bg-rose-500 px-2 py-0.5 text-[11px] font-semibold text-white shadow-sm">
-            −{discount}%
+        {/* Badges — top left */}
+        <div className="absolute left-2 top-2 flex flex-col gap-1">
+          {isOnSale && (
+            <span className="bg-rose-600 px-2 py-0.5 text-[10px] font-bold text-white">
+              −{discount}%
+            </span>
+          )}
+          {product.badge?.text === 'MÁS VENDIDO' && (
+            <span className="bg-amber-400 px-2 py-0.5 text-[10px] font-bold text-black">
+              BESTSELLER
+            </span>
+          )}
+          <span className="bg-black px-2 py-0.5 text-[10px] font-bold text-amber-400">
+            B2G1 FREE
           </span>
-        )}
+        </div>
 
-        {/* Quick view button — appears on hover */}
-        <button
-          type="button"
-          onClick={() => onQuickView?.(product)}
-          className={`absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-white/95 px-4 py-1.5 text-xs font-medium text-slate-900 shadow-lg backdrop-blur transition-all duration-300 ${
-            hovered ? 'translate-y-0 opacity-100' : 'translate-y-3 opacity-0'
-          }`}
-        >
-          <Eye className="mr-1 inline h-3 w-3" />
-          Vista rápida
-        </button>
-      </div>
+        {/* Quick view on hover */}
+        {hovered && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              onQuickView?.(product);
+            }}
+            className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-white px-4 py-1.5 text-xs font-bold text-black shadow-lg"
+          >
+            Vista rápida
+          </button>
+        )}
+      </Link>
 
       {/* Body */}
-      <div className="flex flex-1 flex-col gap-1.5 p-4">
-        {product.brand && (
-          <span className="text-[10px] font-medium uppercase tracking-wider text-amber-600">
-            {product.brand}
-          </span>
-        )}
+      <div className="flex flex-1 flex-col p-3">
+        {/* Brand */}
+        <div className="text-[10px] font-bold uppercase tracking-wider text-amber-600">
+          {product.brand || 'Equastore'}
+        </div>
+
+        {/* Title */}
         <Link
           href={`/producto/${product.slug}`}
-          className="line-clamp-2 text-sm font-medium text-slate-900 transition-colors hover:text-amber-700"
+          className="mt-1 line-clamp-2 text-sm font-bold text-slate-900 hover:text-amber-700"
         >
           {product.title}
         </Link>
 
         {/* Rating */}
         {product.rating && (
-          <div className="flex items-center gap-1 text-[11px]">
-            <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-            <span className="font-medium text-slate-700">{product.rating.toFixed(1)}</span>
-            <span className="text-slate-400">·</span>
-            <span className="text-slate-500">{product.reviewCount?.toLocaleString()}</span>
+          <div className="mt-1 flex items-center gap-1 text-[11px]">
+            <div className="flex">
+              {[1, 2, 3, 4, 5].map((s) => (
+                <Star
+                  key={s}
+                  className={`h-3 w-3 ${
+                    s <= Math.round(product.rating!)
+                      ? 'fill-amber-400 text-amber-400'
+                      : 'fill-slate-200 text-slate-200'
+                  }`}
+                />
+              ))}
+            </div>
+            <span className="text-slate-600">{product.rating.toFixed(1)}</span>
+            <span className="text-slate-400">({product.reviewCount?.toLocaleString()})</span>
           </div>
         )}
 
-        {/* Price */}
-        <div className="mt-auto flex items-end justify-between pt-2">
-          <div className="flex flex-col">
-            {price.originalAmount && price.originalAmount > price.amount && (
-              <span className="text-[11px] text-slate-400 line-through">
-                {symbol}{price.originalAmount.toLocaleString()}
-              </span>
-            )}
-            <span className="text-lg font-bold text-slate-900">
-              {symbol}{price.amount.toLocaleString()}
-              <span className="ml-1 text-[10px] font-normal text-slate-500">{price.currency}</span>
-            </span>
-          </div>
-          <button
-            type="button"
-            aria-label="Agregar al carrito"
-            className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-slate-900 text-white transition-colors hover:bg-amber-500 hover:text-slate-950"
-          >
-            <Plus className="h-4 w-4" />
-          </button>
+        {/* Spec line */}
+        <div className="mt-1 text-[11px] text-slate-500">
+          {product.specifications?.[0] || 'Suplemento premium'}
         </div>
+
+        {/* Stock */}
+        <div className="mt-1 text-[11px] font-bold text-emerald-600">In stock</div>
+
+        {/* Price */}
+        <div className="mt-2 flex items-baseline gap-2">
+          {isOnSale && (
+            <span className="text-xs text-slate-400 line-through">
+              {symbol}{price.originalAmount?.toLocaleString()}
+            </span>
+          )}
+          <span className={`text-lg font-black ${isOnSale ? 'text-rose-600' : 'text-slate-900'}`}>
+            {symbol}{price.amount.toLocaleString()}
+          </span>
+          <span className="text-[10px] text-slate-500">{price.currency}</span>
+        </div>
+
+        {/* Quick order button */}
+        <button
+          type="button"
+          onClick={() => onQuickView?.(product)}
+          className="mt-2 inline-flex h-9 items-center justify-center gap-1.5 bg-black text-xs font-bold text-white transition hover:bg-amber-400 hover:text-black"
+        >
+          <ShoppingCart className="h-3.5 w-3.5" />
+          QUICK ORDER
+        </button>
       </div>
     </div>
   );

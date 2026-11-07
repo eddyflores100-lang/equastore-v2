@@ -2,12 +2,10 @@
 
 import { SiteHeader } from './site-header';
 import { Hero } from './hero';
-import { TrustStrip } from './trust-strip';
-import { Categories } from './categories';
+import { ShopByGoal } from './shop-by-goal';
 import { FeaturedProducts } from './featured-products';
-import { Testimonials } from './testimonials';
+import { Categories } from './categories';
 import { SiteFooter } from './site-footer';
-import { OfferModal } from './offer-modal';
 
 export function LandingPage() {
   return (
@@ -15,13 +13,11 @@ export function LandingPage() {
       <SiteHeader />
       <main>
         <Hero />
-        <TrustStrip />
-        <Categories />
+        <ShopByGoal />
         <FeaturedProducts />
-        <Testimonials />
+        <Categories />
       </main>
       <SiteFooter />
-      <OfferModal />
     </>
   );
 }
