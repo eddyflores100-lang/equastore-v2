@@ -7,7 +7,7 @@
   --color-foreground: var(--foreground);
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'Inter', monospace;
-  --font-heading: 'Oswald', 'Inter', sans-serif;
+  --font-heading: 'Inter', sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -70,7 +70,7 @@
   --chart-3: #17C3A3;
   --chart-4: #DC2626;
   --chart-5: #8B5CF6;
-  --radius: 0.375rem;
+  --radius: 0.5rem;
   --sidebar: #F9FAFB;
   --sidebar-foreground: #111827;
   --sidebar-primary: #1F5AF6;
@@ -93,4 +93,78 @@
     font-family: 'Inter', system-ui, sans-serif;
     font-weight: 800;
   }
+}
+
+/* === PERMANENT DEPTH EFFECTS === */
+
+/* Card depth — always visible */
+.depth-card {
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05), 0 0 0 1px rgba(0,0,0,0.02);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+.depth-card:hover {
+  box-shadow: 0 20px 40px -10px rgba(31,90,246,0.2), 0 8px 16px -4px rgba(0,0,0,0.1), 0 0 0 1px rgba(31,90,246,0.1);
+  transform: translateY(-4px);
+}
+
+/* Button depth — gradient + shadow */
+.depth-btn {
+  background: linear-gradient(135deg, #1F5AF6 0%, #1A4DD6 100%);
+  box-shadow: 0 4px 12px rgba(31,90,246,0.35), inset 0 1px 0 rgba(255,255,255,0.15);
+  transition: all 0.3s ease;
+}
+.depth-btn:hover {
+  background: linear-gradient(135deg, #1A4DD6 0%, #1740B8 100%);
+  box-shadow: 0 8px 24px rgba(31,90,246,0.5), inset 0 1px 0 rgba(255,255,255,0.2);
+  transform: translateY(-1px);
+}
+
+/* Badge depth */
+.depth-badge-red {
+  background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%);
+  box-shadow: 0 2px 8px rgba(220,38,38,0.4), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+.depth-badge-yellow {
+  background: linear-gradient(135deg, #FFB800 0%, #E5A700 100%);
+  box-shadow: 0 2px 8px rgba(255,184,0,0.4), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+
+/* Glass effect */
+.glass {
+  background: rgba(20,24,31,0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.glass-light {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Glow effects */
+.glow-blue {
+  box-shadow: 0 0 24px rgba(31,90,246,0.4);
+}
+.glow-red {
+  box-shadow: 0 0 24px rgba(220,38,38,0.4);
+}
+
+/* Text glow */
+.text-glow-blue {
+  text-shadow: 0 0 20px rgba(31,90,246,0.6);
+}
+.text-glow-white {
+  text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+}
+
+/* Image depth */
+.img-depth {
+  box-shadow: inset 0 0 60px rgba(0,0,0,0.3), inset 0 -20px 40px rgba(0,0,0,0.2);
+}
+
+/* Icon circle depth */
+.icon-depth {
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.2);
 }
