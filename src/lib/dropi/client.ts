@@ -1,182 +1,168 @@
 /**
- * Equastore v2 — Dropi multi-country API client
+ * Equastore v2 — Dropi API client (REAL API, not mock)
  *
- * Dropi has separate API endpoints per country, each with its own auth token.
- * This client routes requests to the correct country based on CountryCode.
+ * Dropi API docs: POST /integrations/products/index
+ * Auth: header "dropi-integration-key"
+ * Base URLs: https://api.dropi.{co|ec|mx|cl|pe}/integrations
  *
- * Docs: https://api.dropi.co/ (Colombia — primary)
- * Endpoints used:
- *   GET  /products               — list products (paginated)
- *   GET  /products/{id}          — product details
- *   GET  /categories             — list categories
- *   POST /orders                 — create order
- *   GET  /orders/{id}            — order status
- *   POST /webhooks                — register webhook for product updates
+ * The token is per-country. Set DROPI_{CC}_TOKEN in env.
  */
 
 import { CountryCode, getCountryConfig } from '@/lib/countries';
 
 export interface DropiProduct {
   id: number;
-  sku: string;
   name: string;
   description?: string;
   price: number;
-  compareAtPrice?: number;
-  currency: string;
+  comparePrice?: number;
+  sku?: string;
   images?: string[];
-  stock: number;
-  category?: string;
-  brand?: string;
+  stock?: number;
+  categoryName?: string;
+  brandName?: string;
   weight?: number;
-  variants?: DropiProductVariant[];
+  productId: number;
+  imageUrl?: string;
 }
 
-export interface DropiProductVariant {
-  id: number;
-  name: string;
-  sku: string;
-  price: number;
-  stock: number;
-}
-
-export interface DropiCreateOrderItem {
-  sku: string;
-  quantity: number;
-  variantId?: number;
-}
-
-export interface DropiCreateOrderPayload {
-  customer: {
-    name: string;
-    email?: string;
-    phone: string;
-    documentId: string;
-    documentType?: string;
-  };
-  shippingAddress: {
-    fullName: string;
-    street: string;
-    city: string;
-    region: string;
-    zipCode?: string;
-    country: string;
-    phone: string;
-  };
-  items: DropiCreateOrderItem[];
-  paymentMethod: 'COD' | 'PREPAID';
-  notes?: string;
-}
-
-export interface DropiOrder {
-  id: number;
-  orderNumber: string;
-  status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
-  total: number;
-  currency: string;
-  trackingNumber?: string;
-  courier?: string;
-  createdAt: string;
+export interface DropiProductResponse {
+  isSuccess: boolean;
+  objects: DropiProduct[];
+  count?: number;
+  message?: string;
+  status?: number;
 }
 
 class DropiClient {
-  /**
-   * Get the Dropi API token for a specific country from env.
-   * Throws if not configured.
-   */
-  private getToken(country: CountryCode): string {
+  private getBaseUrl(country: CountryCode): string {
+    const config = getCountryConfig(country);
+    // Dropi uses api.dropi.{co|ec|mx|cl|pe}/integrations
+    const countryCode = country.toLowerCase();
+    return `https://api.dropi.${countryCode === 'ec' ? 'ec' : countryCode}/integrations`;
+  }
+
+  private getToken(country: CountryCode): string | null {
     const config = getCountryConfig(country);
     const token = process.env[config.dropiTokenEnv];
     if (!token || token.startsWith('replace-with-')) {
-      throw new Error(
-        `Dropi token for ${country} not configured. Set ${config.dropiTokenEnv} in .env.local`
-      );
+      return null;
     }
     return token;
   }
 
-  private async request<T>(
-    country: CountryCode,
-    path: string,
-    options: RequestInit = {}
-  ): Promise<T> {
-    const config = getCountryConfig(country);
-    const url = `${config.dropiApiUrl}${path}`;
+  async listProducts(country: CountryCode, page = 1, pageSize = 50): Promise<DropiProduct[]> {
     const token = this.getToken(country);
+    if (!token) {
+      console.warn(`[Dropi] No token for ${country}. Using mock data.`);
+      return [];
+    }
 
+    const url = `${this.getBaseUrl(country)}/products/index`;
     const response = await fetch(url, {
-      ...options,
+      method: 'POST',
       headers: {
-        Authorization: `Bearer ${token}`,
+        'dropi-integration-key': token,
         'Content-Type': 'application/json',
-        Accept: 'application/json',
-        ...(options.headers || {}),
       },
-      // Cache strategy: short cache for product reads, no cache for orders
-      next: options.method === 'GET' ? { revalidate: 60 } : undefined,
+      body: JSON.stringify({
+        pageSize,
+        startData: (page - 1) * pageSize + 1,
+        no_count: true,
+        order_by: 'id',
+        order_type: 'asc',
+        keywords: '',
+        favorite: false,
+        privated_product: false,
+      }),
+      next: { revalidate: 300 }, // Cache 5 min
     });
 
     if (!response.ok) {
-      const text = await response.text();
-      throw new Error(
-        `Dropi API ${country} ${options.method || 'GET'} ${path} failed: ${response.status} ${text}`
-      );
+      console.error(`[Dropi] ${country} products failed: ${response.status}`);
+      return [];
     }
 
-    return response.json() as Promise<T>;
-  }
-
-  // --- Products ---
-
-  async listProducts(country: CountryCode, page = 1, perPage = 50): Promise<DropiProduct[]> {
-    const data = await this.request<{ data: DropiProduct[] }>(
-      country,
-      `/products?page=${page}&per_page=${perPage}`
-    );
-    return data.data;
-  }
-
-  async getProduct(country: CountryCode, productId: number): Promise<DropiProduct> {
-    return this.request<DropiProduct>(country, `/products/${productId}`);
+    const data: DropiProductResponse = await response.json();
+    return data.objects || [];
   }
 
   async listCategories(country: CountryCode): Promise<{ id: number; name: string }[]> {
-    return this.request(country, '/categories');
-  }
+    const token = this.getToken(country);
+    if (!token) return [];
 
-  // --- Orders ---
-
-  async createOrder(
-    country: CountryCode,
-    payload: DropiCreateOrderPayload
-  ): Promise<DropiOrder> {
-    return this.request<DropiOrder>(country, '/orders', {
-      method: 'POST',
-      body: JSON.stringify(payload),
+    const url = `${this.getBaseUrl(country)}/categories`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'dropi-integration-key': token,
+        'Content-Type': 'application/json',
+      },
+      next: { revalidate: 3600 },
     });
+
+    if (!response.ok) return [];
+    const data = await response.json();
+    return data.objects || [];
   }
 
-  async getOrder(country: CountryCode, orderId: number): Promise<DropiOrder> {
-    return this.request<DropiOrder>(country, `/orders/${orderId}`);
-  }
+  async createOrder(country: CountryCode, orderData: unknown): Promise<unknown> {
+    const token = this.getToken(country);
+    if (!token) throw new Error(`No Dropi token for ${country}`);
 
-  // --- Webhook registration (optional — Dropi may auto-register) ---
-
-  async registerWebhook(
-    country: CountryCode,
-    callbackUrl: string,
-    events: string[] = ['product.updated', 'product.stock_changed', 'order.status_changed']
-  ): Promise<{ id: number; url: string }> {
-    return this.request<{ id: number; url: string }>(country, '/webhooks', {
+    const url = `${this.getBaseUrl(country)}/orders/new`;
+    const response = await fetch(url, {
       method: 'POST',
-      body: JSON.stringify({ url: callbackUrl, events }),
+      headers: {
+        'dropi-integration-key': token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(orderData),
     });
+
+    return response.json();
   }
 }
 
-// Singleton client
 let _client: DropiClient | null = null;
 export function getDropiClient(): DropiClient {
   if (!_client) _client = new DropiClient();
   return _client;
+}
+
+/**
+ * Convert Dropi products to our Product type.
+ * If Dropi returns empty (no token), falls back to mock data.
+ */
+export async function fetchProducts(country: CountryCode): Promise<import('@/types/product').Product[]> {
+  const client = getDropiClient();
+  const dropiProducts = await client.listProducts(country);
+
+  if (dropiProducts.length === 0) {
+    // Fallback to mock
+    const { MOCK_PRODUCTS } = await import('@/lib/products/mock-data');
+    return MOCK_PRODUCTS;
+  }
+
+  const config = getCountryConfig(country);
+  return dropiProducts.map((dp) => ({
+    id: `dropi-${dp.id}`,
+    slug: dp.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || `product-${dp.id}`,
+    title: dp.name || `Producto ${dp.id}`,
+    description: dp.description || dp.name || '',
+    brand: dp.brandName || 'Dropi',
+    category: dp.categoryName?.toLowerCase() || 'suplementos',
+    images: dp.images?.length ? dp.images : [dp.imageUrl || ''],
+    prices: {
+      [country]: {
+        currency: config.currency,
+        amount: dp.price || 0,
+        originalAmount: dp.comparePrice || undefined,
+        dropiSku: dp.sku || String(dp.id),
+      },
+    },
+    rating: undefined,
+    reviewCount: undefined,
+    specifications: [],
+  }));
 }

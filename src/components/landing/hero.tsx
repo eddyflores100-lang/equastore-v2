@@ -1,8 +1,77 @@
 'use client';
 
+import { Canvas, useFrame } from '@react-three/fiber';
+import { Float, Environment, ContactShadows, RoundedBox } from '@react-three/drei';
+import { useRef, Suspense } from 'react';
+import type { Mesh } from 'three';
 import Link from 'next/link';
-import { ChevronLeft, ChevronRight, Star, Flame } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Flame, Star } from 'lucide-react';
 import { useCountry } from '@/components/country/country-provider';
+
+// 3D Scene: floating supplement container
+function SupplementContainer() {
+  const ref = useRef<Mesh>(null);
+
+  useFrame((state) => {
+    if (ref.current) {
+      ref.current.rotation.y = state.clock.elapsedTime * 0.3;
+      ref.current.position.y = Math.sin(state.clock.elapsedTime) * 0.1;
+    }
+  });
+
+  return (
+    <Float speed={2} rotationIntensity={0.5} floatIntensity={0.8}>
+      {/* Main container body */}
+      <RoundedBox ref={ref} args={[1.2, 1.8, 1.2]} radius={0.15} smoothness={4}>
+        <meshStandardMaterial
+          color="#1F5AF6"
+          metalness={0.7}
+          roughness={0.2}
+          emissive="#1F5AF6"
+          emissiveIntensity={0.15}
+        />
+      </RoundedBox>
+
+      {/* Cap */}
+      <mesh position={[0, 1.1, 0]}>
+        <cylinderGeometry args={[0.45, 0.45, 0.3, 32]} />
+        <meshStandardMaterial color="#FFB800" metalness={0.8} roughness={0.15} />
+      </mesh>
+
+      {/* Label area */}
+      <mesh position={[0, -0.1, 0.61]}>
+        <planeGeometry args={[0.9, 1.2]} />
+        <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={0.1} />
+      </mesh>
+    </Float>
+  );
+}
+
+function Scene3D() {
+  return (
+    <>
+      <ambientLight intensity={0.4} />
+      <spotLight position={[5, 5, 5]} angle={0.3} penumbra={1} intensity={2} color="#1F5AF6" />
+      <spotLight position={[-5, 3, -5]} angle={0.4} penumbra={1} intensity={1.5} color="#FFB800" />
+      <pointLight position={[0, -3, 2]} intensity={1} color="#3B82F6" />
+
+      <Suspense fallback={null}>
+        <SupplementContainer />
+        <Environment preset="city" />
+      </Suspense>
+
+      <ContactShadows
+        position={[0, -1.3, 0]}
+        opacity={0.4}
+        scale={5}
+        blur={2}
+        far={4}
+        color="#000000"
+      />
+    </>
+  );
+}
 
 export function Hero() {
   const { country } = useCountry();
@@ -10,138 +79,161 @@ export function Hero() {
 
   return (
     <section className="relative overflow-hidden bg-[#0a0f1c]">
-      <div className="relative h-[520px] overflow-hidden sm:h-[580px]">
-        {/* Background */}
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=1920&q=80')" }}
-        />
-        {/* Dark overlays for depth */}
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(10,15,28,0.95), rgba(10,15,28,0.7), rgba(10,15,28,0.2))' }} />
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(0deg, rgba(10,15,28,0.8), transparent, rgba(10,15,28,0.3))' }} />
+      <div className="relative h-[600px] overflow-hidden">
+        {/* Background gradient layers */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0a0f1c] via-[#0a0f1c]/70 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1c] via-transparent to-[#0a0f1c]/40" />
 
-        {/* GLOW ORBS - always visible */}
-        <div style={{ position: 'absolute', left: '20%', top: '25%', width: '300px', height: '300px', borderRadius: '50%', background: 'rgba(31,90,246,0.25)', filter: 'blur(120px)' }} />
-        <div style={{ position: 'absolute', right: '25%', bottom: '20%', width: '224px', height: '224px', borderRadius: '50%', background: 'rgba(59,130,246,0.2)', filter: 'blur(100px)' }} />
-        <div style={{ position: 'absolute', left: '50%', top: '40%', width: '160px', height: '160px', borderRadius: '50%', background: 'rgba(220,38,38,0.1)', filter: 'blur(80px)' }} />
+        {/* Glow orbs */}
+        <div className="pointer-events-none absolute left-1/4 top-1/4 h-72 w-72 rounded-full bg-[#1F5AF6]/20 blur-[120px]" />
+        <div className="pointer-events-none absolute right-1/4 bottom-1/4 h-56 w-56 rounded-full bg-[#3B82F6]/15 blur-[100px]" />
 
-        {/* Content */}
+        {/* Content + 3D Canvas */}
         <div className="relative mx-auto flex h-full max-w-7xl items-center px-4 sm:px-6 lg:px-8">
-          <div className="max-w-lg text-white">
-            {/* Badge - red gradient + glow */}
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              borderRadius: '8px',
-              padding: '6px 12px',
-              fontSize: '12px',
-              fontWeight: 700,
-              background: 'linear-gradient(135deg, #DC2626, #B91C1C)',
-              boxShadow: '0 4px 20px rgba(220,38,38,0.5)',
-              marginBottom: '16px',
-            }}>
-              <Flame className="h-3 w-3" />
-              BLACK FRIDAY EARLY SALE
-            </div>
+          <div className="grid w-full grid-cols-1 gap-8 lg:grid-cols-2 lg:items-center">
+            {/* Left: Text content with Framer Motion animations */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, ease: 'easeOut' }}
+              className="max-w-lg text-white"
+            >
+              {/* Badge */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.6 }}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  borderRadius: '8px',
+                  padding: '6px 12px',
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  background: 'linear-gradient(135deg, #DC2626, #B91C1C)',
+                  boxShadow: '0 4px 20px rgba(220,38,38,0.5)',
+                  marginBottom: '16px',
+                }}
+              >
+                <Flame className="h-3 w-3" />
+                BLACK FRIDAY EARLY SALE
+              </motion.div>
 
-            {/* Headline with STRONG text shadow */}
-            <h1 style={{
-              fontSize: '3.5rem',
-              fontWeight: 800,
-              lineHeight: 0.95,
-              letterSpacing: '-0.02em',
-              textShadow: '0 4px 30px rgba(0,0,0,0.6), 0 0 40px rgba(31,90,246,0.3)',
-            }}>B2G1 FREE</h1>
+              {/* Headline */}
+              <motion.h1
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.7 }}
+                style={{
+                  fontSize: '3.5rem',
+                  fontWeight: 800,
+                  lineHeight: 0.95,
+                  textShadow: '0 4px 30px rgba(0,0,0,0.6)',
+                }}
+              >
+                B2G1 FREE
+              </motion.h1>
 
-            <p style={{
-              marginTop: '12px',
-              fontSize: '1.25rem',
-              fontWeight: 700,
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em',
-              color: '#1F5AF6',
-              textShadow: '0 2px 20px rgba(31,90,246,0.6)',
-            }}>Hasta 40% OFF en Signature</p>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.6 }}
+                style={{
+                  marginTop: '12px',
+                  fontSize: '1.25rem',
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  color: '#1F5AF6',
+                  textShadow: '0 2px 20px rgba(31,90,246,0.6)',
+                }}
+              >
+                Hasta 40% OFF en Signature
+              </motion.p>
 
-            {/* CTA - gradient + glow */}
-            <Link
-              href={`${base}/ofertas`}
-              style={{
-                display: 'inline-flex',
-                height: '48px',
-                alignItems: 'center',
-                borderRadius: '8px',
-                padding: '0 32px',
-                fontSize: '14px',
-                fontWeight: 700,
-                color: '#fff',
-                background: 'linear-gradient(135deg, #1F5AF6, #1A4DD6)',
-                boxShadow: '0 8px 30px rgba(31,90,246,0.5), inset 0 1px 0 rgba(255,255,255,0.15)',
-                marginTop: '24px',
-                textDecoration: 'none',
-              }}
-            >COMPRAR AHORA</Link>
+              {/* CTA */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.6 }}
+              >
+                <Link
+                  href={`${base}/ofertas`}
+                  style={{
+                    display: 'inline-flex',
+                    height: '48px',
+                    alignItems: 'center',
+                    borderRadius: '8px',
+                    padding: '0 32px',
+                    fontSize: '14px',
+                    fontWeight: 700,
+                    color: '#fff',
+                    background: 'linear-gradient(135deg, #1F5AF6, #1A4DD6)',
+                    boxShadow: '0 8px 30px rgba(31,90,246,0.5)',
+                    marginTop: '24px',
+                    textDecoration: 'none',
+                  }}
+                >
+                  COMPRAR AHORA
+                </Link>
+              </motion.div>
 
-            {/* Trust pill - glassmorphism */}
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '12px',
-              borderRadius: '999px',
-              padding: '8px 16px',
-              fontSize: '12px',
-              fontWeight: 500,
-              color: 'rgba(255,255,255,0.9)',
-              background: 'rgba(255,255,255,0.05)',
-              backdropFilter: 'blur(12px)',
-              WebkitBackdropFilter: 'blur(12px)',
-              border: '1px solid rgba(255,255,255,0.1)',
-              marginTop: '24px',
-            }}>
-              <span className="flex items-center gap-1">
-                <Star className="h-3.5 w-3.5" style={{ fill: '#FFB800', color: '#FFB800' }} />
-                4.9/5 · 10K+
-              </span>
-              <span style={{ color: 'rgba(255,255,255,0.3)' }}>|</span>
-              <span>Envío +$25</span>
-              <span style={{ color: 'rgba(255,255,255,0.3)' }}>|</span>
-              <span>ISO</span>
-            </div>
+              {/* Trust */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.7, duration: 0.5 }}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  borderRadius: '999px',
+                  padding: '8px 16px',
+                  fontSize: '12px',
+                  fontWeight: 500,
+                  color: 'rgba(255,255,255,0.9)',
+                  background: 'rgba(255,255,255,0.05)',
+                  backdropFilter: 'blur(12px)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  marginTop: '24px',
+                }}
+              >
+                <span className="flex items-center gap-1">
+                  <Star className="h-3.5 w-3.5" style={{ fill: '#FFB800', color: '#FFB800' }} />
+                  4.9/5 · 10K+
+                </span>
+                <span style={{ color: 'rgba(255,255,255,0.3)' }}>|</span>
+                <span>Envío +$25</span>
+                <span style={{ color: 'rgba(255,255,255,0.3)' }}>|</span>
+                <span>ISO</span>
+              </motion.div>
+            </motion.div>
+
+            {/* Right: 3D Canvas */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3, duration: 1, ease: 'easeOut' }}
+              className="relative h-[400px] lg:h-[500px]"
+            >
+              <Canvas
+                camera={{ position: [0, 0, 5], fov: 45 }}
+                style={{ background: 'transparent' }}
+                dpr={[1, 2]}
+              >
+                <Scene3D />
+              </Canvas>
+
+              {/* Glow behind canvas */}
+              <div
+                className="pointer-events-none absolute inset-0"
+                style={{
+                  background: 'radial-gradient(circle at center, rgba(31,90,246,0.15), transparent 60%)',
+                  zIndex: -1,
+                }}
+              />
+            </motion.div>
           </div>
-        </div>
-
-        {/* Carousel buttons - glass */}
-        <button style={{
-          position: 'absolute',
-          left: '12px',
-          top: '50%',
-          transform: 'translateY(-50%)',
-          borderRadius: '999px',
-          padding: '10px',
-          background: 'rgba(255,255,255,0.05)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-          border: '1px solid rgba(255,255,255,0.15)',
-        }}><ChevronLeft className="h-4 w-4 text-white" /></button>
-
-        <button style={{
-          position: 'absolute',
-          right: '12px',
-          top: '50%',
-          transform: 'translateY(-50%)',
-          borderRadius: '999px',
-          padding: '10px',
-          background: 'rgba(255,255,255,0.05)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-          border: '1px solid rgba(255,255,255,0.15)',
-        }}><ChevronRight className="h-4 w-4 text-white" /></button>
-
-        {/* Dots */}
-        <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-1.5">
-          <span style={{ height: '6px', width: '24px', borderRadius: '999px', background: '#1F5AF6', boxShadow: '0 0 10px rgba(31,90,246,0.8)' }} />
-          {[2,3,4,5,6,7,8].map(i => <span key={i} style={{ height: '6px', width: '6px', borderRadius: '999px', background: 'rgba(255,255,255,0.3)' }} />)}
         </div>
       </div>
 
