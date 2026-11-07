@@ -13,33 +13,25 @@ export function FeaturedProducts() {
   const { country } = useCountry();
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [quickViewOpen, setQuickViewOpen] = useState(false);
-
   const products = getFeaturedProducts(8);
 
-  const handleQuickView = (product: Product) => {
-    setQuickViewProduct(product);
-    setQuickViewOpen(true);
-  };
-
   return (
-    <section className="bg-white py-10">
+    <section className="bg-white py-8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Section header */}
-        <div className="mb-6 flex items-end justify-between border-b border-slate-200 pb-3">
-          <h2 className="text-xl font-black text-slate-900 sm:text-2xl">
+        <div className="mb-4 flex items-center justify-between border-b-2 border-[#1F5AF6] pb-2">
+          <h2 className="text-xl font-black uppercase text-slate-900 sm:text-2xl">
             BEST SELLERS
           </h2>
-          <Link
-            href="/productos"
-            className="flex items-center gap-1 text-xs font-bold text-amber-600 hover:text-amber-700"
-          >
-            VER TODOS
-            <ChevronRight className="h-3 w-3" />
+          <Link href="/productos" className="flex items-center gap-1 text-xs font-bold text-[#1F5AF6]">
+            VER TODOS <ChevronRight className="h-3 w-3" />
           </Link>
         </div>
 
-        {/* Product grid */}
-        <ProductGrid products={products} country={country} onQuickView={handleQuickView} />
+        <ProductGrid
+          products={products}
+          country={country}
+          onQuickView={(p) => { setQuickViewProduct(p); setQuickViewOpen(true); }}
+        />
 
         <ProductQuickView
           product={quickViewProduct}

@@ -47,74 +47,39 @@
 }
 
 :root {
-  /* Equastore v2 — Farmacia profesional palette
-     Navy blue + white + orange accent (transmite scale, banking trust) */
+  /* Equastore v2 — bodybuilding.com exact palette */
   --background: oklch(1 0 0);
-  --foreground: oklch(0.18 0.04 250); /* navy text */
+  --foreground: oklch(0.18 0.02 250);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.04 250);
+  --card-foreground: oklch(0.18 0.02 250);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.04 250);
-  --primary: oklch(0.34 0.13 255); /* blue-800 */
+  --popover-foreground: oklch(0.18 0.02 250);
+  --primary: oklch(0.55 0.22 255); /* BB.com blue #1F5AF6 */
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0.01 250);
-  --secondary-foreground: oklch(0.34 0.13 255);
-  --muted: oklch(0.97 0.01 250);
-  --muted-foreground: oklch(0.55 0.02 250);
-  --accent: oklch(0.72 0.19 55); /* orange-500 */
+  --secondary: oklch(0.96 0.01 250);
+  --secondary-foreground: oklch(0.18 0.02 250);
+  --muted: oklch(0.96 0.01 250);
+  --muted-foreground: oklch(0.5 0.02 250);
+  --accent: oklch(0.55 0.22 255);
   --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
+  --destructive: oklch(0.6 0.24 25);
   --border: oklch(0.92 0.01 250);
   --input: oklch(0.92 0.01 250);
-  --ring: oklch(0.34 0.13 255);
-  --chart-1: oklch(0.55 0.18 255); /* blue */
-  --chart-2: oklch(0.72 0.19 55); /* orange */
-  --chart-3: oklch(0.65 0.16 165); /* green */
-  --chart-4: oklch(0.55 0.13 280); /* purple */
-  --chart-5: oklch(0.72 0.18 25); /* red */
-  --radius: 0.625rem;
+  --ring: oklch(0.55 0.22 255);
+  --chart-1: oklch(0.55 0.22 255);
+  --chart-2: oklch(0.72 0.19 55);
+  --chart-3: oklch(0.65 0.16 165);
+  --chart-4: oklch(0.55 0.13 280);
+  --chart-5: oklch(0.72 0.18 25);
+  --radius: 0.375rem;
   --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.18 0.04 250);
-  --sidebar-primary: oklch(0.34 0.13 255);
+  --sidebar-foreground: oklch(0.18 0.02 250);
+  --sidebar-primary: oklch(0.55 0.22 255);
   --sidebar-primary-foreground: oklch(0.985 0 0);
   --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.34 0.13 255);
+  --sidebar-accent-foreground: oklch(0.55 0.22 255);
   --sidebar-border: oklch(0.92 0.01 250);
-  --sidebar-ring: oklch(0.34 0.13 255);
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --sidebar-ring: oklch(0.55 0.22 255);
 }
 
 @layer base {

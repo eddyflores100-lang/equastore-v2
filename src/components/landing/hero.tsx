@@ -1,12 +1,12 @@
 import Link from 'next/link';
-import { ChevronRight, Flame, Star } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 
 export function Hero() {
   return (
-    <section className="bg-black text-white">
-      {/* Hero banner — full width */}
-      <div className="relative overflow-hidden">
-        {/* Background image — gym/fitness image */}
+    <section className="relative bg-black">
+      {/* Hero carousel — full-width gym image with blue tint */}
+      <div className="relative h-[500px] overflow-hidden sm:h-[600px]">
+        {/* Background gym image */}
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
@@ -14,83 +14,89 @@ export function Hero() {
               "url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1920&q=80')",
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/40" />
+        {/* Dark blue gradient overlay — BB.com style */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0D1520]/90 via-[#0D1520]/60 to-transparent" />
 
-        <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-32">
-          <div className="max-w-2xl">
+        {/* Content */}
+        <div className="relative mx-auto flex h-full max-w-7xl items-center px-4 sm:px-6 lg:px-8">
+          <div className="max-w-xl text-white">
             {/* Badge */}
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-amber-400 px-3 py-1 text-xs font-bold text-black">
-              <Flame className="h-3 w-3" />
-              BLACK FRIDAY EARLY SALE
+            <div className="mb-4 inline-block bg-[#1F5AF6] px-4 py-1.5 text-sm font-black">
+              BLACK FRIDAY SALE
             </div>
 
             {/* Headline */}
-            <h1 className="text-4xl font-black leading-none tracking-tight sm:text-5xl lg:text-6xl">
-              HASTA <span className="text-amber-400">40% OFF</span>
-              <br />
-              EN SUPLEMENTOS
-              <br />
-              <span className="text-amber-400">SIGNATURE</span>
+            <h1 className="text-5xl font-black italic leading-none sm:text-6xl lg:text-7xl">
+              B2G1
+              <span className="text-[#1F5AF6]"> FREE</span>
             </h1>
-
-            <p className="mt-4 max-w-lg text-base text-slate-300 sm:text-lg">
-              La marca #1 en suplementos deportivos de LATAM desde 2019. Calidad farmacéutica, envío en 24-72h, pago flexible.
+            <p className="mt-3 text-lg font-bold uppercase tracking-wider sm:text-xl">
+              Hasta 40% OFF en Signature
             </p>
 
-            {/* CTAs */}
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                href="/ofertas"
-                className="inline-flex h-12 items-center gap-2 bg-amber-400 px-6 text-sm font-black text-black transition hover:bg-amber-500"
-              >
-                SHOP NOW
-                <ChevronRight className="h-4 w-4" />
-              </Link>
-              <Link
-                href="/productos"
-                className="inline-flex h-12 items-center gap-2 border border-white/30 bg-white/10 px-6 text-sm font-bold text-white backdrop-blur transition hover:bg-white/20"
-              >
-                Ver catálogo
-              </Link>
-            </div>
+            <p className="mt-4 max-w-md text-sm text-white/80">
+              Suplementos de grado farmacéutico, envío a LATAM en 24-72h. Pago con tarjeta, transferencia, COD o cripto.
+            </p>
+
+            {/* CTA — BB.com blue button */}
+            <Link
+              href="/ofertas"
+              className="mt-6 inline-flex h-12 items-center bg-[#1F5AF6] px-8 text-sm font-black text-white shadow-lg transition hover:bg-[#1A4DD6]"
+            >
+              SHOP NOW
+            </Link>
 
             {/* Trust row */}
-            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-slate-300">
+            <div className="mt-6 flex items-center gap-4 text-xs text-white/70">
               <span className="flex items-center gap-1">
-                <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                <Star className="h-3.5 w-3.5 fill-[#1F5AF6] text-[#1F5AF6]" />
                 4.9/5 · 10K+ reseñas
               </span>
-              <span>★ Envío gratis +$25</span>
-              <span>★ Pago con tarjeta, COD, cripto</span>
-              <span>★ ISO Certified Lab</span>
+              <span>·</span>
+              <span>Envío gratis +$25</span>
+              <span>·</span>
+              <span>ISO Certified</span>
             </div>
           </div>
         </div>
+
+        {/* Carousel arrows */}
+        <button className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-white/20 p-2 backdrop-blur hover:bg-white/30">
+          <ChevronLeft className="h-5 w-5 text-white" />
+        </button>
+        <button className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-white/20 p-2 backdrop-blur hover:bg-white/30">
+          <ChevronRight className="h-5 w-5 text-white" />
+        </button>
+
+        {/* Pagination dots */}
+        <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-1.5">
+          <span className="h-1.5 w-6 rounded-full bg-[#1F5AF6]" />
+          {[2,3,4,5,6,7,8].map(i => (
+            <span key={i} className="h-1.5 w-1.5 rounded-full bg-white/40" />
+          ))}
+        </div>
       </div>
 
-      {/* Secondary promo banners — 3 cards */}
-      <div className="border-t border-white/10">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 divide-y divide-white/10 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-          <PromoCard
-            badge="NUEVO"
-            title="Bodybuilding Peptides"
-            text="Ahora disponibles en Equastore"
+      {/* Promo strip — 3 items like BB.com */}
+      <div className="border-t border-white/10 bg-[#14181F]">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 sm:grid-cols-3">
+          <PromoLink
+            badge="NEW"
+            badgeColor="bg-[#FFB800] text-black"
+            text="BODYBUILDING PEPTIDES ARE LIVE"
             href="/categorias/peptidos"
-            color="text-amber-400"
           />
-          <PromoCard
-            badge="5X POINTS"
-            title="Members Rewards"
-            text="Gana 5 puntos por cada $1"
+          <PromoLink
+            badge="5X"
+            badgeColor="bg-[#1F5AF6] text-white"
+            text="MEMBERS EARN 5 POINTS PER $1"
             href="/rewards"
-            color="text-rose-400"
           />
-          <PromoCard
+          <PromoLink
             badge="QUIZ"
-            title="Encontrá tu Stack"
-            text="Tomá el quiz y armá tu stack ideal"
+            badgeColor="bg-[#17C3A3] text-black"
+            text="FIND YOUR STACK — TAKE THE QUIZ"
             href="/quiz"
-            color="text-emerald-400"
           />
         </div>
       </div>
@@ -98,30 +104,14 @@ export function Hero() {
   );
 }
 
-function PromoCard({
-  badge,
-  title,
-  text,
-  href,
-  color,
-}: {
-  badge: string;
-  title: string;
-  text: string;
-  href: string;
-  color: string;
-}) {
+function PromoLink({ badge, badgeColor, text, href }: { badge: string; badgeColor: string; text: string; href: string }) {
   return (
-    <Link
-      href={href}
-      className="group flex items-center gap-4 p-5 transition hover:bg-white/[0.03]"
-    >
-      <div className={`text-xs font-black ${color}`}>{badge}</div>
-      <div className="flex-1">
-        <div className="text-sm font-bold text-white">{title}</div>
-        <div className="text-xs text-slate-400">{text}</div>
-      </div>
-      <ChevronRight className="h-4 w-4 text-slate-500 transition-transform group-hover:translate-x-1" />
+    <Link href={href} className="flex items-center justify-center gap-2 border-b border-white/10 py-2.5 text-xs sm:border-b-0 sm:border-r sm:last:border-r-0">
+      <span className={`rounded px-1.5 py-0.5 text-[10px] font-black ${badgeColor}`}>
+        {badge}
+      </span>
+      <span className="font-bold text-white">{text}</span>
+      <span className="text-[#1F5AF6] underline">LEARN MORE</span>
     </Link>
   );
 }
