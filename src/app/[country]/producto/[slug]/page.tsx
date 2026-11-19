@@ -4,7 +4,8 @@ import { Star, ShoppingCart, Shield, Truck, CheckCircle2, ChevronRight, Minus, P
 import { SiteHeader } from '@/components/landing/site-header';
 import { SiteFooter } from '@/components/landing/site-footer';
 import { COUNTRY_CONFIGS, isCountryCode, type CountryCode } from '@/lib/countries';
-import { MOCK_PRODUCTS, getProductBySlug, getProductPrice, getDiscountPercent, getProductsByCategory } from '@/lib/products/mock-data';
+import { getProductPrice, getDiscountPercent } from '@/lib/products/mock-data';
+import { getCatalogProducts } from '@/lib/products/catalog';
 import { ProductCard } from '@/components/product/product-card';
 import { ProductDetailClient } from './detail-client';
 
@@ -13,9 +14,9 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
-  const countries = Object.keys(COUNTRY_CONFIGS);
+  const countries = Object.keys(COUNTRY_CONFIGS) as CountryCode[];
   return countries.flatMap((country) =>
-    MOCK_PRODUCTS.map((product) => ({
+    getCatalogProducts(country).map((product) => ({
       country: country.toLowerCase(),
       slug: product.slug,
     }))
@@ -28,11 +29,11 @@ export default async function ProductDetailPage({ params }: PageProps) {
   if (!isCountryCode(country)) notFound();
   const countryCode = country as CountryCode;
 
-  const product = getProductBySlug(slug);
+  const product = getCatalogProducts(country).find((entry) => entry.slug === slug);
   if (!product) notFound();
 
-  const related = getProductsByCategory(product.category)
-    .filter((p) => p.id !== product.id)
+  const related = getCatalogProducts(countryCode)
+    .filter((p) => p.category === product.category && p.id !== product.id)
     .slice(0, 4);
 
   const price = getProductPrice(product, countryCode);
@@ -121,8 +122,10 @@ function currencySymbol(currency: string): string {
 }
 
 export async function generateMetadata({ params }: PageProps) {
-  const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const { country: rawCountry, slug } = await params;
+  const country = rawCountry.toUpperCase();
+  if (!isCountryCode(country)) return {};
+  const product = getCatalogProducts(country).find((entry) => entry.slug === slug);
   if (!product) return {};
   return {
     title: product.title,
