@@ -1,8 +1,9 @@
+import { getCatalog } from '@/lib/products/catalog';
 import { notFound } from 'next/navigation';
 import { SiteHeader } from '@/components/landing/site-header';
 import { SiteFooter } from '@/components/landing/site-footer';
 import { COUNTRY_CONFIGS, isCountryCode, type CountryCode } from '@/lib/countries';
-import { MOCK_PRODUCTS, MOCK_CATEGORIES, getProductsByCategory } from '@/lib/products/mock-data';
+import { MOCK_CATEGORIES } from '@/lib/products/mock-data';
 import { ProductCatalogClient } from '../../productos/catalog-client';
 
 export default async function CategoryPage({ params }: { params: Promise<{ country: string; category: string }> }) {
@@ -12,7 +13,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ count
   const countryCode = country as CountryCode;
   const cat = MOCK_CATEGORIES.find(c => c.slug === category);
   if (!cat) notFound();
-  const products = getProductsByCategory(category);
+  const products = getCatalog(countryCode).filter((product) => product.category === category);
   return (
     <>
       <SiteHeader />
