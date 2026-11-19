@@ -148,3 +148,7 @@ prisma/
 ## 🌍 License
 
 MIT © AliceLabs LLC
+
+### MCP de productos Dropi Ecuador
+
+Consulta [la guía del MCP](mcp/README.md) para buscar, previsualizar y publicar productos.

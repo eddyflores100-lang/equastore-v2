@@ -6,6 +6,15 @@
       "headers": {
         "x-api-key": "${API_KEY_21ST}"
       }
+    },
+    "equastore-dropi": {
+      "type": "stdio",
+      "command": "npm",
+      "args": [
+        "--silent",
+        "run",
+        "mcp:dropi"
+      ]
     }
   }
 }

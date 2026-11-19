@@ -1,10 +1,11 @@
+import { getCatalog, getCatalogProduct } from '@/lib/products/catalog';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Star, ShoppingCart, Shield, Truck, CheckCircle2, ChevronRight, Minus, Plus } from 'lucide-react';
 import { SiteHeader } from '@/components/landing/site-header';
 import { SiteFooter } from '@/components/landing/site-footer';
 import { COUNTRY_CONFIGS, isCountryCode, type CountryCode } from '@/lib/countries';
-import { MOCK_PRODUCTS, getProductBySlug, getProductPrice, getDiscountPercent, getProductsByCategory } from '@/lib/products/mock-data';
+import { getProductPrice, getDiscountPercent } from '@/lib/products/mock-data';
 import { ProductCard } from '@/components/product/product-card';
 import { ProductDetailClient } from './detail-client';
 
@@ -13,9 +14,9 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
-  const countries = Object.keys(COUNTRY_CONFIGS);
+  const countries = Object.keys(COUNTRY_CONFIGS).filter(isCountryCode);
   return countries.flatMap((country) =>
-    MOCK_PRODUCTS.map((product) => ({
+    getCatalog(country).map((product) => ({
       country: country.toLowerCase(),
       slug: product.slug,
     }))
@@ -28,11 +29,11 @@ export default async function ProductDetailPage({ params }: PageProps) {
   if (!isCountryCode(country)) notFound();
   const countryCode = country as CountryCode;
 
-  const product = getProductBySlug(slug);
+  const product = getCatalogProduct(countryCode, slug);
   if (!product) notFound();
 
-  const related = getProductsByCategory(product.category)
-    .filter((p) => p.id !== product.id)
+  const related = getCatalog(countryCode)
+    .filter((p) => p.category === product.category && p.id !== product.id)
     .slice(0, 4);
 
   const price = getProductPrice(product, countryCode);
@@ -48,9 +49,9 @@ export default async function ProductDetailPage({ params }: PageProps) {
         <nav className="mb-6 flex items-center gap-1 text-sm text-slate-500">
           <Link href="/" className="hover:text-blue-700">Inicio</Link>
           <ChevronRight className="h-3 w-3" />
-          <Link href="/productos" className="hover:text-blue-700">Productos</Link>
+          <Link href={`/${countryCode.toLowerCase()}/productos`} className="hover:text-blue-700">Productos</Link>
           <ChevronRight className="h-3 w-3" />
-          <Link href={`/productos?categoria=${product.category}`} className="hover:text-blue-700 capitalize">
+          <Link href={`/${countryCode.toLowerCase()}/categorias/${product.category}`} className="hover:text-blue-700 capitalize">
             {product.category}
           </Link>
           <ChevronRight className="h-3 w-3" />
@@ -121,8 +122,10 @@ function currencySymbol(currency: string): string {
 }
 
 export async function generateMetadata({ params }: PageProps) {
-  const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const { slug, country: rawCountry } = await params;
+  const countryCode = rawCountry.toUpperCase();
+  if (!isCountryCode(countryCode)) return {};
+  const product = getCatalogProduct(countryCode, slug);
   if (!product) return {};
   return {
     title: product.title,

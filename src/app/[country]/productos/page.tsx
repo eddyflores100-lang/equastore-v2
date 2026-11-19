@@ -1,8 +1,9 @@
+import { getCatalog } from '@/lib/products/catalog';
 import { notFound } from 'next/navigation';
 import { SiteHeader } from '@/components/landing/site-header';
 import { SiteFooter } from '@/components/landing/site-footer';
 import { COUNTRY_CONFIGS, isCountryCode, type CountryCode } from '@/lib/countries';
-import { MOCK_PRODUCTS, MOCK_CATEGORIES, getProductsByCategory } from '@/lib/products/mock-data';
+import { MOCK_CATEGORIES } from '@/lib/products/mock-data';
 import { ProductCatalogClient } from './catalog-client';
 
 interface PageProps {
@@ -21,6 +22,8 @@ export default async function ProductosPage({ params }: PageProps) {
   if (!isCountryCode(country)) notFound();
   const countryCode = country as CountryCode;
 
+  const products = getCatalog(countryCode);
+
   return (
     <>
       <SiteHeader />
@@ -28,12 +31,12 @@ export default async function ProductosPage({ params }: PageProps) {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-slate-900">Todos los productos</h1>
           <p className="mt-2 text-sm text-slate-500">
-            {MOCK_PRODUCTS.length} productos · {COUNTRY_CONFIGS[countryCode].flag} {COUNTRY_CONFIGS[countryCode].name}
+            {products.length} productos · {COUNTRY_CONFIGS[countryCode].flag} {COUNTRY_CONFIGS[countryCode].name}
           </p>
         </div>
 
         <ProductCatalogClient
-          products={MOCK_PRODUCTS}
+          products={products}
           country={countryCode}
           categories={MOCK_CATEGORIES}
         />

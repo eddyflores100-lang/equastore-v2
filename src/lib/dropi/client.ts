@@ -51,6 +51,45 @@ class DropiClient {
     return token;
   }
 
+  async readIntegrationCatalog(
+    country: CountryCode,
+    query: { keywords: string; page: number; pageSize: number } | { id: number },
+  ): Promise<unknown> {
+    const token = this.getToken(country);
+    if (!token) throw new Error(`Configura ${getCountryConfig(country).dropiTokenEnv} como secreto.`);
+
+    const detail = 'id' in query;
+    const path = detail ? `products/v2/${query.id}` : 'products/index';
+    const response = await fetch(`${this.getBaseUrl(country)}/${path}`, {
+      method: detail ? 'GET' : 'POST',
+      headers: {
+        'dropi-integration-key': token,
+        'Content-Type': 'application/json',
+      },
+      ...(detail ? {} : {
+        body: JSON.stringify({
+          keywords: query.keywords,
+          pageSize: query.pageSize,
+          startData: (query.page - 1) * query.pageSize + 1,
+          active: true,
+          integration: true,
+          no_count: true,
+          order_by: 'id',
+          order_type: 'asc',
+          privated_product: false,
+        }),
+      }),
+      redirect: 'error',
+      signal: AbortSignal.timeout(15_000),
+    });
+
+    if (response.status === 401 || response.status === 403) {
+      throw new Error(`Dropi rechazó el acceso (HTTP ${response.status}). Revisa el token y la IP autorizada.`);
+    }
+    if (!response.ok) throw new Error(`Dropi respondió HTTP ${response.status}.`);
+    return response.json();
+  }
+
   async listProducts(country: CountryCode, page = 1, pageSize = 50): Promise<DropiProduct[]> {
     const token = this.getToken(country);
     if (!token) {
