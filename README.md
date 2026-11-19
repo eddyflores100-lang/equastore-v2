@@ -148,3 +148,20 @@ prisma/
 ## 🌍 License
 
 MIT © AliceLabs LLC
+
+## Importar productos de Dropi Ecuador
+
+Configura `DROPI_EC_TOKEN` en `.env.local` con el token de integración de
+Dropi Ecuador. Usa Node.js 22 o posterior. El importador consulta un producto
+por ID y exige un precio de venta en USD y una categoría de Equastore.
+
+```bash
+npm run import:dropi:ec -- 12345 29.90 suplementos --dry-run
+npm run import:dropi:ec -- 12345 29.90 suplementos
+```
+
+El primer comando previsualiza los datos. El segundo añade o actualiza ese ID
+en `src/lib/products/dropi-ec.json`. Ejecuta una importación a la vez.
+Revisa el cambio antes de publicarlo y vuelve a generar el sitio para servir
+el catálogo actualizado. El token solo se usa durante la importación.
+El catálogo estático no sincroniza stock ni envía pedidos a Dropi.

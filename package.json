@@ -4,6 +4,7 @@
   "private": true,
   "description": "Equastore v2 — multi-country dropshipping (Dropi EC/CO/MX/CL/PE) with dLocal payments, COD, and AI-powered checkout. Built with Next.js 16 + Prisma + Tailwind + shadcn/ui.",
   "scripts": {
+    "import:dropi:ec": "node --env-file-if-exists=.env.local scripts/import-dropi-ec.mjs",
     "dev": "next dev",
     "build": "next build",
     "build:gh": "GITHUB_PAGES=true next build",
