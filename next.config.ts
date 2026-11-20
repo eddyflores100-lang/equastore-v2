@@ -22,8 +22,9 @@ const basePath = isGithubPages ? `/${repoName}` : '';
 const nextConfig: NextConfig = {
   // Disable cacheComponents for static export (it requires server runtime)
   cacheComponents: false,
-  // partialPrefetching also requires cacheComponents — disable for GH Pages
-  ...(isGithubPages ? {} : { partialPrefetching: true }),
+  // partialPrefetching requires cacheComponents to be enabled — it must stay
+  // OFF while cacheComponents is disabled (both Vercel and GitHub Pages builds),
+  // otherwise `next build` fails: "partialPrefetching requires cacheComponents".
   // Static export for GitHub Pages
   ...(isGithubPages && {
     output: 'export',
